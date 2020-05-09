@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:imageText="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/back_inside">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/back_inside">
+
+            <LinearLayout
+                android:id="@+id/ll_image"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/white"
+                android:weightSum="2">
+
+                <ImageView
+                    android:id="@+id/pic_one"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:background="#123456" />
+
+                <ImageView
+                    android:id="@+id/pic_two"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:background="#123456" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_tags"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/ll_image"
+                android:background="@color/white"
+                android:weightSum="5">
+
+                <com.example.androidlib.view.ImageButtonWithText
+                    android:id="@+id/ibw_new_game"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    imageText:image="@drawable/m4399_png_big_emoji_new_flag"
+                    imageText:text="@string/new_game"
+                    imageText:textColor="@color/black"
+                    imageText:textTop="@dimen/padding_top" />
+
+                <com.example.androidlib.view.ImageButtonWithText
+                    android:id="@+id/ibw_invincible"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    imageText:image="@drawable/m4399_png_youpai_icon"
+                    imageText:text="@string/invincible"
+                    imageText:textColor="@color/black"
+                    imageText:textTop="@dimen/padding_top" />
+
+                <com.example.androidlib.view.ImageButtonWithText
+                    android:id="@+id/ibw_online_game"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    imageText:image="@drawable/m4399_png_live_game_icon_default"
+                    imageText:text="@string/online_game"
+                    imageText:textColor="@color/black"
+                    imageText:textTop="@dimen/padding_top" />
+
+                <com.example.androidlib.view.ImageButtonWithText
+                    android:id="@+id/ibw_necessary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    imageText:image="@drawable/m4399_png_setting_permissions_duration"
+                    imageText:text="@string/necessary"
+                    imageText:textColor="@color/black"
+                    imageText:textTop="@dimen/padding_top" />
+
+                <com.example.androidlib.view.ImageButtonWithText
+                    android:id="@+id/ibw_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    imageText:image="@drawable/m4399_png_default_exchange_youbi"
+                    imageText:text="@string/money"
+                    imageText:textColor="@color/black"
+                    imageText:textTop="@dimen/padding_top" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/my_game"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@+id/ll_tags"
+                android:layout_marginTop="8dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/tv_my_game"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/my_game"
+                    android:textColor="#80000000"
+                    android:textSize="14sp"
+                    imageText:layout_constraintStart_toStartOf="parent"
+                    imageText:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/delete_my_game"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/m4399_png_add_blacklist_behaviour_logo"
+                    imageText:layout_constraintEnd_toEndOf="parent"
+                    imageText:layout_constraintTop_toTopOf="@+id/tv_my_game" />
+
+                <Button
+                    android:id="@+id/my_game_more"
+                    android:layout_width="60dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/head_green"
+                    android:text="@string/more"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"
+                    imageText:layout_constraintBottom_toBottomOf="parent"
+                    imageText:layout_constraintEnd_toEndOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_game"
+                    android:layout_width="match_parent"
+                    android:layout_marginEnd="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    imageText:layout_constraintStart_toStartOf="parent"
+                    imageText:layout_constraintTop_toBottomOf="@+id/tv_my_game">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/update_apk"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@+id/my_game"
+                android:layout_marginTop="8dp"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/update_apk_img"
+                    android:layout_width="59dp"
+                    android:layout_height="59.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/m4399_png_game_detail_share_boxlogo"
+                    imageText:layout_constraintStart_toStartOf="parent"
+                    imageText:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/update_apk_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/game_box"
+                    android:textColor="#d9000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    imageText:layout_constraintStart_toEndOf="@+id/update_apk_img"
+                    imageText:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/update_apk_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/update_apk_detail"
+                    android:textColor="#80000000"
+                    android:textSize="13sp"
+                    imageText:layout_constraintStart_toStartOf="@+id/update_apk_name"
+                    imageText:layout_constraintTop_toBottomOf="@+id/update_apk_name" />
+
+                <RatingBar
+                    android:id="@+id/apk_star"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:numStars="5"
+                    android:progressTint="@color/yellow"
+                    android:rating="5"
+                    imageText:layout_constraintStart_toStartOf="@+id/update_apk_detail"
+                    imageText:layout_constraintTop_toBottomOf="@+id/update_apk_detail" />
+
+                <TextView
+                    android:id="@+id/update_apk_edition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/update_edition"
+                    android:textColor="#54ba3d"
+                    android:textSize="13sp"
+                    imageText:layout_constraintStart_toStartOf="@+id/update_apk_detail"
+                    imageText:layout_constraintTop_toBottomOf="@+id/apk_star" />
+
+                <TextView
+                    android:id="@+id/update_apk_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="9dp"
+                    android:text="@string/update_apk_size"
+                    android:textColor="#80000000"
+                    android:textSize="13sp"
+                    imageText:layout_constraintStart_toEndOf="@+id/update_apk_edition"
+                    imageText:layout_constraintTop_toTopOf="@+id/update_apk_edition" />
+
+                <ImageView
+                    android:id="@+id/update_apk_delete"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/m4399_png_add_blacklist_behaviour_logo"
+                    imageText:layout_constraintEnd_toEndOf="parent"
+                    imageText:layout_constraintTop_toTopOf="@+id/update_apk_name"/>
+
+                <Button
+                    android:id="@+id/update_apk_button"
+                    android:layout_width="60dp"
+                    android:layout_height="28dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/yellow"
+                    android:textSize="14sp"
+                    android:textColor="#ffffff"
+                    android:text="@string/update"
+                    imageText:layout_constraintEnd_toEndOf="@+id/update_apk_delete"
+                    imageText:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_game_inf"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/update_apk"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:overScrollMode="never">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_advertisement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/rv_game_inf"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:overScrollMode="never">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</LinearLayout>

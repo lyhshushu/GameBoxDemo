@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FindGameMoudle</string>
+    <string name="new_game">新游</string>
+    <string name="invincible">无敌</string>
+    <string name="online_game">网游</string>
+    <string name="necessary">必备</string>
+    <string name="money">赚钱</string>
+    <string name="download">下载</string>
+    <string name="my_game">我的游戏:玩这里有惊喜</string>
+    <string name="more">更多</string>
+    <string name="game_box">游戏盒</string>
+    <string name="update_apk_detail">新增贴心引导，带你玩转酷炫游戏盒</string>
+    <string name="update_edition">2.9.0.980版本</string>
+    <string name="update_apk_size">22.6M</string>
+    <string name="update">升级</string>
+</resources>

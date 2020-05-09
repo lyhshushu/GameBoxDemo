@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.androidkun.xtablayout.XTabLayout
+        android:id="@+id/find_game_tab"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@color/head_green"
+
+        app:xTabBackgroundColor="@color/head_green"
+        app:xTabTextSelectedBold="true"
+        app:xTabTextBold="false"
+
+        app:xTabIndicatorColor="@color/white"
+        app:xTabIndicatorHeight="1dp"
+        app:xTabIndicatorWidth="50dp"
+
+        app:xTabTextColor="@color/white"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+    </com.androidkun.xtablayout.XTabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/find_game_viewpager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/find_game_tab"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+    </androidx.viewpager.widget.ViewPager>
+</androidx.constraintlayout.widget.ConstraintLayout>

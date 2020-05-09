@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/find_game"
+        android:icon="@drawable/m4399_png_zone_more_function_insert_game_grey"
+        android:title="@string/find_game" />
+    <item
+        android:id="@+id/dynamic"
+        android:icon="@drawable/m4399_png_message_notice_icon_dynamic"
+        android:title="@string/dynamic" />
+
+
+</menu>

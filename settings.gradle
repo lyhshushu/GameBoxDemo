@@ -1,0 +1,4 @@
+rootProject.name='GameBoxDemo'
+include ':app'
+include ':androidlib'
+include ':findgame'

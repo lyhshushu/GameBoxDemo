@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="imageText">
+        <attr name="image" format="integer" />
+        <attr name="text" format="integer" />
+        <attr name="textColor" format="integer" />
+        <attr name="textTop" format="integer" />
+        <attr name="imageWidth" format="integer"/>
+        <attr name="imageHeight" format="integer"/>
+    </declare-styleable>
+</resources>

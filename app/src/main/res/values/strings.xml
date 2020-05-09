@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">GameBoxDemo</string>
+    <string name="hint_test">测试输入</string>
+    <string name="find_game">找游戏</string>
+    <string name="dynamic">动态</string>
+</resources>
