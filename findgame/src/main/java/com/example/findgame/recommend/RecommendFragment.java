@@ -3,6 +3,8 @@ package com.example.findgame.recommend;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,14 +17,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.androidlib.BaseFragment;
+import com.example.androidlib.utils.GsonUtils;
 import com.example.androidlib.view.ImageButtonWithText;
 import com.example.findgame.R;
 import com.example.findgame.R2;
 import com.example.findgame.bean.AdvertisementBean;
 import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
+import com.example.findgame.recommend.controller.MvcListener;
+import com.google.gson.Gson;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -219,4 +223,18 @@ public class RecommendFragment extends BaseFragment {
 //        PackageManager packageManager=getActivity().getPackageManager();
 
     }
+
+//    @Override
+//    public void onSuccess(String str) {
+//        try {
+//            String adPicOne=str;
+//        }catch (Exception e){
+//            Log.e("reCommend",e+"");
+//        }
+//    }
+//
+//    @Override
+//    public void onFailed() {
+//        Toast.makeText(mContext,"传输失败",Toast.LENGTH_SHORT).show();
+//    }
 }

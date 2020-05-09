@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.squareup.okio:okio:1.17.4'
 
     //gson
-    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     //XTabLayout
     implementation 'com.androidkun:XTabLayout:1.1.3'
