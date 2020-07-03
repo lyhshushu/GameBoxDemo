@@ -18,6 +18,7 @@ import com.example.findgame.classification.ClassificationFragment;
 import com.example.findgame.information.InformationFragment;
 import com.example.findgame.rank.RankFragment;
 import com.example.findgame.recommend.RecommendFragment;
+import com.example.findgame.recommend.controller.MvcListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ import java.util.List;
 import butterknife.BindView;
 
 
+/**
+ * @author 4399lyh
+ */
 public class FindGameFragment extends BaseFragment {
 
     @BindView(R2.id.find_game_tab)
@@ -53,9 +57,11 @@ public class FindGameFragment extends BaseFragment {
         fragments.add(new InformationFragment());
 
         FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager(), fragments, titles);
+        findGameViewPager.setOffscreenPageLimit(5);
         findGameViewPager.setAdapter(adapter);
         xTabLayout.setupWithViewPager(findGameViewPager);
     }
+
 
     public class FragmentAdapter extends FragmentStatePagerAdapter {
 

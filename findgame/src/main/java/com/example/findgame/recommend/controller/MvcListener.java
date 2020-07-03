@@ -1,14 +1,22 @@
 package com.example.findgame.recommend.controller;
 
 public interface MvcListener {
-    /**
-     * 成功
-     * @param str
-     */
-    void onSuccess(String str);
 
-    /**
-     * 失败
-     */
-    void onFailed();
+        /**
+         * 失败
+         * @param message
+         */
+        void onError(String message);
+
+        /**
+         * 完成
+         */
+        void onFinish();
+
+        /**
+         * 进程中
+         * @param progress
+         */
+        void onProgress(int progress);
+
 }

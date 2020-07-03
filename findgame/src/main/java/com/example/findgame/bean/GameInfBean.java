@@ -1,26 +1,35 @@
 package com.example.findgame.bean;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
+
+
+/**
+ * @author 4399lyh
+ */
 public class GameInfBean implements Serializable {
 
+    @SerializedName("appname")
     private String gameName;
+    @SerializedName("num_download")
     private String gameDownload;
+    @SerializedName("review")
     private String gameInf;
+    @SerializedName("icon_path")
     private String gameImgUrl;
 
     public GameInfBean() {
 
     }
 
-    public GameInfBean(String name,String download, String inf, String imgUrl) {
-        this.gameName = name;
-        this.gameDownload=download;
-        this.gameInf = inf;
-        this.gameImgUrl = imgUrl;
-    }
+//    public GameInfBean(String name,String download, String inf, String imgUrl) {
+//        this.gameName = name;
+//        this.gameDownload=download;
+//        this.gameInf = inf;
+//        this.gameImgUrl = imgUrl;
+//    }
 
     public String getGameName() {
         return gameName;
@@ -54,13 +63,13 @@ public class GameInfBean implements Serializable {
         this.gameDownload = gameDownload;
     }
 
-    public static List<GameInfBean> getGameInfData() {
-        List<GameInfBean> data = new LinkedList<>();
-        data.add(new GameInfBean("部落冲突","10w+ 下载 107.52M","3D魔幻动作网游，11111", null));
-        data.add(new GameInfBean("水果忍者", "10w+ 下载 107.53M","3D魔幻动作网游，22222", null));
-        data.add(new GameInfBean("战斗吧剑灵","10w+ 下载 107.54M", "3D魔幻动作网游，33333", null));
-        return data;
-    }
+//    public static List<GameInfBean> getGameInfData() {
+//        List<GameInfBean> data = new LinkedList<>();
+//        data.add(new GameInfBean("部落冲突","10w+ 下载 107.52M","3D魔幻动作网游，11111", null));
+//        data.add(new GameInfBean("水果忍者", "10w+ 下载 107.53M","3D魔幻动作网游，22222", null));
+//        data.add(new GameInfBean("战斗吧剑灵","10w+ 下载 107.54M", "3D魔幻动作网游，33333", null));
+//        return data;
+//    }
 
 
 }

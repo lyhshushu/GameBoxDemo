@@ -13,4 +13,6 @@
     <string name="update_edition">2.9.0.980版本</string>
     <string name="update_apk_size">22.6M</string>
     <string name="update">升级</string>
+    <string name="over_10000">万+</string>
+    <string name="times">次</string>
 </resources>

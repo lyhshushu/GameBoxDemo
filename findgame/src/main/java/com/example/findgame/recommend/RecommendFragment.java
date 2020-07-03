@@ -1,10 +1,10 @@
 package com.example.findgame.recommend;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.nfc.Tag;
-import android.util.Log;
+import android.gesture.GestureLibraries;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,24 +17,38 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.androidlib.BaseFragment;
-import com.example.androidlib.utils.GsonUtils;
 import com.example.androidlib.view.ImageButtonWithText;
 import com.example.findgame.R;
 import com.example.findgame.R2;
 import com.example.findgame.bean.AdvertisementBean;
 import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
-import com.example.findgame.recommend.controller.MvcListener;
-import com.google.gson.Gson;
+import com.example.findgame.bean.TitleAd;
+import com.example.findgame.recommend.controller.MvcModelImp;
+import com.example.findgame.recommend.controller.OKutil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 
+import static com.example.androidlib.baseurl.Common.BASEURL;
+
 
 public class RecommendFragment extends BaseFragment {
+
+    public static final int OK_MODEl = 0;
+    public static final int NO_MODEL = 1;
+    public static final int GAME_INF = 0;
+    public static final int GAME_AD_PIC = 1;
+
 
     @BindView(R2.id.pic_one)
     ImageView picOne;
@@ -93,6 +107,8 @@ public class RecommendFragment extends BaseFragment {
     private List<GameInfBean> mGameInfData;
     private List<AdvertisementBean> mAdInfData;
     private List<MyGameBean> mMyGameData;
+    private List<String> adPicData;
+    public List<TitleAd> adPicUrl;
     private Context mContext;
 
 
@@ -157,8 +173,8 @@ public class RecommendFragment extends BaseFragment {
 
         mAdInfAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
-            if(id==R.id.csl_ad_game){
-                Toast.makeText(mContext,mAdInfData.get(position).getAdName()+position,Toast.LENGTH_SHORT).show();
+            if (id == R.id.csl_ad_game) {
+                Toast.makeText(mContext, mAdInfData.get(position).getAdName() + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -197,13 +213,91 @@ public class RecommendFragment extends BaseFragment {
 
     @Override
     protected void applyData() {
-        mGameInfData = GameInfBean.getGameInfData();
+        //测试数据
+//        mGameInfData = GameInfBean.getGameInfData();
         mAdInfData = AdvertisementBean.getAdInfData();
         mMyGameData = getAppList();
 
-        mGameInfAdapter.setNewData(mGameInfData);
+        mGameInfData = new LinkedList<>();
+        adPicUrl = new LinkedList<>();
+        getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
+
         mAdInfAdapter.setNewData(mAdInfData);
         mMyGameAdapter.setNewData(mMyGameData);
+
+    }
+
+
+    private void getJSON(String URL) {
+        MvcModelImp mvcModelImp = new MvcModelImp();
+        mvcModelImp.getModel(URL, new OKutil() {
+            @Override
+            public void onOk(String json) {
+                getGameInf(json);
+                getGameAdPic(json);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameInfAdapter.setNewData(mGameInfData);
+                        Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
+                        Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
+                    }
+                });
+            }
+
+            @Override
+            public void onNo(String message) {
+
+            }
+        });
+
+    }
+
+    private void getGameAdPic(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+
+            String jsonRecPosterList = jsonResultObj.getString("recPosterList");
+            JSONArray jsonArrayAd = new JSONArray(jsonRecPosterList);
+
+            JSONObject listAd = jsonArrayAd.getJSONObject(0);
+            String jsonData = listAd.getString("data");
+
+            JSONArray adPic = new JSONArray(jsonData);
+
+            for (int i = 0; i < 2; i++) {
+                JSONObject picUrl = adPic.getJSONObject(i);
+                TitleAd titleAd = new TitleAd();
+                titleAd.setPicOneUrl(picUrl.getString("poster"));
+                adPicUrl.add(titleAd);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getGameInf(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String jsonRecGame = jsonResultObj.getString("recGame");
+            JSONArray jsonArrayRecGame = new JSONArray(jsonRecGame);
+            for (int i = 0; i < 5; i++) {
+                JSONObject jsonObject = jsonArrayRecGame.getJSONObject(i);
+                GameInfBean gameInfBean = new GameInfBean();
+                gameInfBean.setGameName(jsonObject.getString("appname"));
+                gameInfBean.setGameDownload(jsonObject.getString("num_download"));
+                gameInfBean.setGameInf(jsonObject.getString("review"));
+                gameInfBean.setGameImgUrl(jsonObject.getString("icopath"));
+                mGameInfData.add(gameInfBean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<MyGameBean> getAppList() {
@@ -221,20 +315,6 @@ public class RecommendFragment extends BaseFragment {
         }
         return appList;
 //        PackageManager packageManager=getActivity().getPackageManager();
-
     }
 
-//    @Override
-//    public void onSuccess(String str) {
-//        try {
-//            String adPicOne=str;
-//        }catch (Exception e){
-//            Log.e("reCommend",e+"");
-//        }
-//    }
-//
-//    @Override
-//    public void onFailed() {
-//        Toast.makeText(mContext,"传输失败",Toast.LENGTH_SHORT).show();
-//    }
 }

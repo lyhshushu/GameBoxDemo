@@ -10,8 +10,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.findgame.R;
 import com.example.findgame.bean.MyGameBean;
+import com.example.findgame.recommend.controller.MvcListener;
+import com.example.findgame.recommend.controller.MvcModel;
 
-public class MyGameAdapter extends BaseQuickAdapter<MyGameBean,BaseViewHolder> {
+public class MyGameAdapter extends BaseQuickAdapter<MyGameBean,BaseViewHolder>  {
+
 
 
     public MyGameAdapter(int layoutResId) {
@@ -23,4 +26,5 @@ public class MyGameAdapter extends BaseQuickAdapter<MyGameBean,BaseViewHolder> {
         Glide.with(mContext).load(item.appIcon).into((ImageView)helper.getView(R.id.icon_my_game));
         helper.addOnClickListener(R.id.icon_my_game);
     }
+
 }
