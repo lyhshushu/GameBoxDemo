@@ -70,4 +70,6 @@ dependencies {
     //权限
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation project(path: ':androidlib')
+    //沉浸式状态栏
+    implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
 }

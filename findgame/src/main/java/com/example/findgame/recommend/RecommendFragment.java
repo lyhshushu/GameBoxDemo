@@ -18,11 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.example.androidlib.BaseFragment;
 import com.example.androidlib.view.ImageButtonWithText;
 import com.example.findgame.R;
 import com.example.findgame.R2;
 import com.example.findgame.bean.AdvertisementBean;
+import com.example.findgame.bean.DailyTweetBean;
 import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
 import com.example.findgame.bean.TitleAd;
@@ -101,15 +103,20 @@ public class RecommendFragment extends BaseFragment {
     @BindView(R2.id.my_game_more)
     Button myGameMore;
 
+
     private GameInfAdapter mGameInfAdapter;
     private AdInfAdapter mAdInfAdapter;
     private MyGameAdapter mMyGameAdapter;
-    private List<GameInfBean> mGameInfData;
+    private List<MultiItemEntity> mGameInfData;
     private List<AdvertisementBean> mAdInfData;
     private List<MyGameBean> mMyGameData;
+    static List<DailyTweetBean> dailyTweetBeans;
     private List<String> adPicData;
     public List<TitleAd> adPicUrl;
     private Context mContext;
+
+    public RecommendFragment() {
+    }
 
 
     @Override
@@ -120,7 +127,9 @@ public class RecommendFragment extends BaseFragment {
     @Override
     protected void initView() {
         mContext = getContext();
-        mGameInfAdapter = new GameInfAdapter(R.layout.item_game_inf);
+        mGameInfAdapter = new GameInfAdapter(mGameInfData);
+
+
         rvGameInf.setLayoutManager(new LinearLayoutManager(mContext));
         rvGameInf.addItemDecoration(new RecyclerDivider(mContext));
         rvGameInf.setAdapter(mGameInfAdapter);
@@ -164,10 +173,13 @@ public class RecommendFragment extends BaseFragment {
         });
         mGameInfAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
+            GameInfBean gameInfBean=(GameInfBean) mGameInfData.get(position);
             if (id == R.id.csl_game_inf) {
-                Toast.makeText(mContext, mGameInfData.get(position).getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, gameInfBean.getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.bt_download) {
-                Toast.makeText(mContext, mGameInfData.get(position).getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
+            }else if(id==R.id.tweet){
+                Toast.makeText(mContext,  "特推", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -219,6 +231,7 @@ public class RecommendFragment extends BaseFragment {
         mMyGameData = getAppList();
 
         mGameInfData = new LinkedList<>();
+        dailyTweetBeans= new LinkedList<>();
         adPicUrl = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
 
@@ -235,13 +248,14 @@ public class RecommendFragment extends BaseFragment {
             public void onOk(String json) {
                 getGameInf(json);
                 getGameAdPic(json);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGameInfAdapter.setNewData(mGameInfData);
-                        Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
-                        Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
-                    }
+                getDailyTweet(json);
+                getActivity().runOnUiThread(() -> {
+                    GameInfBean gameInfBean = new GameInfBean();
+                    gameInfBean.setType(2);
+                    mGameInfData.add(4, gameInfBean);
+                    mGameInfAdapter.setNewData(mGameInfData);
+                    Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
+                    Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
                 });
             }
 
@@ -251,6 +265,36 @@ public class RecommendFragment extends BaseFragment {
             }
         });
 
+    }
+    private void getDailyTweet(String json){
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(0);
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+                JSONObject ad = jsonArrayAd.getJSONObject(i);
+                DailyTweetBean dailyTweetBean=new DailyTweetBean();
+                dailyTweetBean.setTweetName(ad.getString("appname"));
+                dailyTweetBean.setTweetPicUrl(ad.getString("icopath"));
+                dailyTweetBean.setTweetTime("昨天");
+                dailyTweetBeans.add(dailyTweetBean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getGameAdPic(String json) {
@@ -293,6 +337,7 @@ public class RecommendFragment extends BaseFragment {
                 gameInfBean.setGameDownload(jsonObject.getString("num_download"));
                 gameInfBean.setGameInf(jsonObject.getString("review"));
                 gameInfBean.setGameImgUrl(jsonObject.getString("icopath"));
+                gameInfBean.setType(1);
                 mGameInfData.add(gameInfBean);
             }
         } catch (JSONException e) {

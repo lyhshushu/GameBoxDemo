@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gyf.immersionbar.ImmersionBar;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -19,23 +21,33 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     private static final long FAST_CLICK_DURATION = 500L;
     private long lastClickTime;
 
-
     protected BaseActivity activity;
     private Unbinder bun;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(getLayoutId());
         bun = ButterKnife.bind(this);
         activity = this;
+
+        ImmersionBar.with(activity)
+                .fitsSystemWindows(true)
+                .statusBarColor(R.color.head_green)
+                .statusBarDarkFont(true)
+                .keyboardEnable(true)
+                .init();
+
+
         initView();
         bindListener();
         initData();
     }
+
 
     @Override
     protected void onDestroy() {

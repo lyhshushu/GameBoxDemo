@@ -36,4 +36,9 @@ dependencies {
     //butter knife
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    //沉浸式状态栏
+    // 基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    // fragment快速实现
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 }

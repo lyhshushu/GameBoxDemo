@@ -1,5 +1,6 @@
 package com.example.findgame.bean;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author 4399lyh
  */
-public class GameInfBean implements Serializable {
+public class GameInfBean implements Serializable, MultiItemEntity {
 
     @SerializedName("appname")
     private String gameName;
@@ -19,6 +20,16 @@ public class GameInfBean implements Serializable {
     private String gameInf;
     @SerializedName("icon_path")
     private String gameImgUrl;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    private int type;
 
     public GameInfBean() {
 
@@ -62,6 +73,12 @@ public class GameInfBean implements Serializable {
     public void setGameDownload(String gameDownload) {
         this.gameDownload = gameDownload;
     }
+
+    @Override
+    public int getItemType() {
+        return type;
+    }
+
 
 //    public static List<GameInfBean> getGameInfData() {
 //        List<GameInfBean> data = new LinkedList<>();

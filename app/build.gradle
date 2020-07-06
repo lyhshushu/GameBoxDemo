@@ -59,4 +59,9 @@ dependencies {
     //权限
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation project(path: ':findgame')
+    //沉浸式状态栏
+    // 基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    // fragment快速实现
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 }

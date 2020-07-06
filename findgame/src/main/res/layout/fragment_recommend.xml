@@ -19,14 +19,14 @@
             <LinearLayout
                 android:id="@+id/ll_image"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:background="@color/white"
                 android:weightSum="2">
 
                 <ImageView
                     android:id="@+id/pic_one"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="110dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
@@ -35,7 +35,7 @@
                 <ImageView
                     android:id="@+id/pic_two"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="110dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
@@ -146,20 +146,20 @@
                     android:layout_width="60dp"
                     android:layout_height="28dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@color/head_green"
                     android:text="@string/more"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:layout_marginBottom="16dp"
                     imageText:layout_constraintBottom_toBottomOf="parent"
                     imageText:layout_constraintEnd_toEndOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_my_game"
                     android:layout_width="match_parent"
-                    android:layout_marginEnd="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="100dp"
                     imageText:layout_constraintStart_toStartOf="parent"
                     imageText:layout_constraintTop_toBottomOf="@+id/tv_my_game">
 
@@ -251,7 +251,7 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/m4399_png_add_blacklist_behaviour_logo"
                     imageText:layout_constraintEnd_toEndOf="parent"
-                    imageText:layout_constraintTop_toTopOf="@+id/update_apk_name"/>
+                    imageText:layout_constraintTop_toTopOf="@+id/update_apk_name" />
 
                 <Button
                     android:id="@+id/update_apk_button"
@@ -259,12 +259,11 @@
                     android:layout_height="28dp"
                     android:layout_marginBottom="16dp"
                     android:background="@color/yellow"
-                    android:textSize="14sp"
-                    android:textColor="#ffffff"
                     android:text="@string/update"
-                    imageText:layout_constraintEnd_toEndOf="@+id/update_apk_delete"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
                     imageText:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    imageText:layout_constraintEnd_toEndOf="@+id/update_apk_delete" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -276,6 +275,7 @@
                 android:layout_below="@+id/update_apk"
                 android:layout_marginTop="8dp"
                 android:background="@color/white"
+                android:descendantFocusability="blocksDescendants"
                 android:overScrollMode="never">
 
             </androidx.recyclerview.widget.RecyclerView>
