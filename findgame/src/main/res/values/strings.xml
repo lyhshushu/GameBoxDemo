@@ -16,4 +16,5 @@
     <string name="over_10000">万+</string>
     <string name="times">次</string>
     <string name="daily_tweet">每日特推</string>
+    <string name="date_format">M月d日</string>
 </resources>

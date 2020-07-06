@@ -1,12 +1,10 @@
 package com.example.findgame.bean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 
 public class DailyTweetBean implements Serializable {
+
     public String getTweetName() {
         return tweetName;
     }
@@ -34,6 +32,18 @@ public class DailyTweetBean implements Serializable {
     private String tweetName;
     private String tweetTime;
     private String tweetPicUrl;
+    private String newGameTime;
+
+
+    public String getNewGameTime() {
+        return newGameTime;
+    }
+
+    public void setNewGameTime(String newGameTime) {
+        this.newGameTime = newGameTime;
+    }
+
+
 
 //    public DailyTweetBean(String tweetName, String tweetTime) {
 //        this.tweetName = tweetName;

@@ -1,10 +1,11 @@
 package com.example.findgame.recommend;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.gesture.GestureLibraries;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,15 +28,24 @@ import com.example.findgame.bean.AdvertisementBean;
 import com.example.findgame.bean.DailyTweetBean;
 import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
+import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -110,10 +120,19 @@ public class RecommendFragment extends BaseFragment {
     private List<MultiItemEntity> mGameInfData;
     private List<AdvertisementBean> mAdInfData;
     private List<MyGameBean> mMyGameData;
+
+    static List<PlayerRecommendBean> playerRecommendBeans;
     static List<DailyTweetBean> dailyTweetBeans;
+    static List<DailyTweetBean> newGameBeans;
+    static List<DailyTweetBean> testGameBeans;
+
     private List<String> adPicData;
     public List<TitleAd> adPicUrl;
     private Context mContext;
+    private Handler handler;
+
+    private List<Integer> types;
+    private List<String> titles;
 
     public RecommendFragment() {
     }
@@ -173,13 +192,15 @@ public class RecommendFragment extends BaseFragment {
         });
         mGameInfAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
-            GameInfBean gameInfBean=(GameInfBean) mGameInfData.get(position);
+            GameInfBean gameInfBean = (GameInfBean) mGameInfData.get(position);
             if (id == R.id.csl_game_inf) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.bt_download) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
-            }else if(id==R.id.tweet){
-                Toast.makeText(mContext,  "特推", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.tweet) {
+                Toast.makeText(mContext, "特推", Toast.LENGTH_SHORT).show();
+            }else if(id==R.id.cl_recommend){
+                Toast.makeText(mContext, "玩家推", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -223,6 +244,8 @@ public class RecommendFragment extends BaseFragment {
         }
     }
 
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void applyData() {
         //测试数据
@@ -231,13 +254,33 @@ public class RecommendFragment extends BaseFragment {
         mMyGameData = getAppList();
 
         mGameInfData = new LinkedList<>();
-        dailyTweetBeans= new LinkedList<>();
+        dailyTweetBeans = new LinkedList<>();
+        playerRecommendBeans = new LinkedList<>();
+        newGameBeans = new LinkedList<>();
+        testGameBeans = new LinkedList<>();
+        types = new LinkedList<>();
+        titles = new LinkedList<>();
         adPicUrl = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
-
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    for (int i = types.size() - 1; i >= 0; i--) {
+                        GameInfBean gameInfBean = new GameInfBean();
+                        gameInfBean.setType(types.get(i));
+                        gameInfBean.setTitleName(titles.get(i));
+                        mGameInfData.add(4 * (i + 1), gameInfBean);
+                        mGameInfAdapter.setNewData(mGameInfData);
+                    }
+                    Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
+                    Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
+                }
+            }
+        };
         mAdInfAdapter.setNewData(mAdInfData);
         mMyGameAdapter.setNewData(mMyGameData);
-
     }
 
 
@@ -249,14 +292,10 @@ public class RecommendFragment extends BaseFragment {
                 getGameInf(json);
                 getGameAdPic(json);
                 getDailyTweet(json);
-                getActivity().runOnUiThread(() -> {
-                    GameInfBean gameInfBean = new GameInfBean();
-                    gameInfBean.setType(2);
-                    mGameInfData.add(4, gameInfBean);
-                    mGameInfAdapter.setNewData(mGameInfData);
-                    Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
-                    Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
-                });
+                getNewGame(json);
+                getTestGame(json);
+                getRecommend(json);
+                handler.sendEmptyMessage(1);
             }
 
             @Override
@@ -264,9 +303,145 @@ public class RecommendFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private void getRecommend(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(3);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+                JSONObject recommend = jsonArrayAd.getJSONObject(i);
+                String gamePart = recommend.getString("game");
+                JSONObject gamePartJson = new JSONObject(gamePart);
+
+                PlayerRecommendBean playerRecommendBean = new PlayerRecommendBean();
+                playerRecommendBean.setRecommendWord(recommend.getString("content"));
+                playerRecommendBean.setPlayerName(recommend.getString("nick"));
+                playerRecommendBean.setRecommendNum(recommend.getString("recommend_num"));
+                playerRecommendBean.setHeadPic(recommend.getString("sface"));
+
+                playerRecommendBean.setGameName(gamePartJson.getString("appname"));
+                playerRecommendBean.setGamePicUrl(gamePartJson.getString("icopath"));
+
+                playerRecommendBeans.add(playerRecommendBean);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getTestGame(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(2);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+
+                JSONObject testGame = jsonArrayAd.getJSONObject(i);
+                DailyTweetBean testGameBean = new DailyTweetBean();
+                testGameBean.setTweetName(testGame.getString("appname"));
+                testGameBean.setTweetPicUrl(testGame.getString("icopath"));
+                testGameBeans.add(testGameBean);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void getNewGame(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(1);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+                JSONObject ad = jsonArrayAd.getJSONObject(i);
+                DailyTweetBean newGameBean = new DailyTweetBean();
+
+                String tweetTime = ad.getString("ext");
+                JSONObject jsonTweetTime = new JSONObject(tweetTime);
+
+                String updateTime = jsonTweetTime.getString("desc");
+
+                int dateLine = Integer.parseInt(jsonTweetTime.getString("dateline"));
+
+                long temp = (long) dateLine * 1000;
+                Timestamp ts = new Timestamp(temp);
+                @SuppressLint("SimpleDateFormat")
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String[] weekDay = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+                Calendar calendar = Calendar.getInstance();
+                String datetime = dateFormat.format(ts);
+                Date date = null;
+                try {
+                    date = dateFormat.parse(datetime);
+                    calendar.setTime(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                int w = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+                if (w < 0) {
+                    w = 0;
+                }
+
+                newGameBean.setNewGameTime(updateTime);
+                newGameBean.setTweetName(ad.getString("appname"));
+                newGameBean.setTweetPicUrl(ad.getString("icopath"));
+                newGameBean.setTweetTime(weekDay[w]);
+                newGameBeans.add(newGameBean);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
-    private void getDailyTweet(String json){
+
+    private void getDailyTweet(String json) {
         try {
             JSONObject jsonArray = new JSONObject(json);
 
@@ -278,6 +453,9 @@ public class RecommendFragment extends BaseFragment {
 
             JSONObject adTweet = jsonArrayAdList.getJSONObject(0);
 
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
             String ext = adTweet.getString("ext");
             JSONObject jsonObjectExt = new JSONObject(ext);
 
@@ -286,10 +464,24 @@ public class RecommendFragment extends BaseFragment {
 
             for (int i = 0; i < jsonArrayAd.length(); i++) {
                 JSONObject ad = jsonArrayAd.getJSONObject(i);
-                DailyTweetBean dailyTweetBean=new DailyTweetBean();
+
+                String tweetTime = ad.getString("ext");
+                JSONObject jsonTweetTime = new JSONObject(tweetTime);
+
+                String dateLineS = jsonTweetTime.getString("dateline");
+                int dateline = Integer.parseInt(dateLineS);
+
+                long temp = (long) dateline * 1000;
+                Timestamp ts = new Timestamp(temp);
+                @SuppressLint("SimpleDateFormat")
+                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
+
+                String tsStr = dateFormat.format(ts);
+
+                DailyTweetBean dailyTweetBean = new DailyTweetBean();
                 dailyTweetBean.setTweetName(ad.getString("appname"));
                 dailyTweetBean.setTweetPicUrl(ad.getString("icopath"));
-                dailyTweetBean.setTweetTime("昨天");
+                dailyTweetBean.setTweetTime(tsStr);
                 dailyTweetBeans.add(dailyTweetBean);
             }
         } catch (JSONException e) {
@@ -330,14 +522,14 @@ public class RecommendFragment extends BaseFragment {
             JSONObject jsonResultObj = new JSONObject(jsonResult);
             String jsonRecGame = jsonResultObj.getString("recGame");
             JSONArray jsonArrayRecGame = new JSONArray(jsonRecGame);
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < jsonArrayRecGame.length(); i++) {
                 JSONObject jsonObject = jsonArrayRecGame.getJSONObject(i);
                 GameInfBean gameInfBean = new GameInfBean();
                 gameInfBean.setGameName(jsonObject.getString("appname"));
                 gameInfBean.setGameDownload(jsonObject.getString("num_download"));
                 gameInfBean.setGameInf(jsonObject.getString("review"));
                 gameInfBean.setGameImgUrl(jsonObject.getString("icopath"));
-                gameInfBean.setType(1);
+                gameInfBean.setType(0);
                 mGameInfData.add(gameInfBean);
             }
         } catch (JSONException e) {

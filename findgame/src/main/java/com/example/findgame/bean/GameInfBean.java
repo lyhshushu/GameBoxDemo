@@ -31,6 +31,17 @@ public class GameInfBean implements Serializable, MultiItemEntity {
 
     private int type;
 
+
+    public String getTitleName() {
+        return titleName;
+    }
+
+    public void setTitleName(String titleName) {
+        this.titleName = titleName;
+    }
+
+    private String titleName;
+
     public GameInfBean() {
 
     }

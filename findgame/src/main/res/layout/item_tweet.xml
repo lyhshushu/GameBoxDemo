@@ -22,10 +22,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/m4399_png_crack_game_carouse_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tweet_time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_tweet_name"

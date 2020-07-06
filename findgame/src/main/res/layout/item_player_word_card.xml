@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="140dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_card"
+        android:layout_width="250dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/player_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/icon_recommend_game"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/m4399_png_crack_game_carouse_bg"
+            app:layout_constraintStart_toEndOf="@id/cl_card"
+            app:layout_constraintStart_toStartOf="@id/cl_card"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_player_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:text="荒野乱斗（盛夏狂欢季）"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@id/icon_recommend_game"
+            app:layout_constraintTop_toTopOf="@id/icon_recommend_game" />
+
+        <TextView
+            android:id="@+id/player_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最近有好多人推荐呢"
+            android:textSize="8sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_player_game"
+            app:layout_constraintTop_toBottomOf="@+id/tv_player_game" />
+
+        <TextView
+            android:id="@+id/player_word"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:maxLines="3"
+            android:text="可以，就是中期有点无趣，3个农夫＋推车＋镰刀可以养活四十人左右，牧人这个职业中期需求大。探险者，航海家和古经研究员是死亡率高的职业，过boos打法，3级防御，1级武器，一直跳斩，就过了。到30人的时候不要忘了带着你的战士和炼金术师去打洞穴，洞穴是探险者找的。战士和炼金术师人数最差在7_2"
+            android:textColor="#000000"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@id/icon_recommend_game"
+            app:layout_constraintTop_toBottomOf="@id/icon_recommend_game" />
+
+        <ImageView
+            android:id="@+id/player_head"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/m4399_png_crack_game_carouse_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/icon_recommend_game"
+            />
+
+        <TextView
+            android:id="@+id/player_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:text="tianshinanhai"
+            android:textSize="8sp"
+            app:layout_constraintStart_toEndOf="@id/player_head"
+            app:layout_constraintTop_toTopOf="@id/player_head" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
