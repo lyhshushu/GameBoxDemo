@@ -29,7 +29,7 @@
     <ImageView
         android:layout_marginTop="8dp"
         android:id="@+id/new_game_icon"
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:src="@drawable/m4399_png_crack_game_carouse_bg"
         app:layout_constraintEnd_toEndOf="parent"

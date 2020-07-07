@@ -32,7 +32,6 @@ import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +42,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -119,12 +117,17 @@ public class RecommendFragment extends BaseFragment {
     private MyGameAdapter mMyGameAdapter;
     private List<MultiItemEntity> mGameInfData;
     private List<AdvertisementBean> mAdInfData;
-    private List<MyGameBean> mMyGameData;
 
     static List<PlayerRecommendBean> playerRecommendBeans;
+    static List<DailyTweetBean> hotBeans;
+    static List<PlayerRecommendBean> newHotBeans;
     static List<DailyTweetBean> dailyTweetBeans;
     static List<DailyTweetBean> newGameBeans;
+    static List<DailyTweetBean> miniGameBeans;
     static List<DailyTweetBean> testGameBeans;
+    static List<List<DailyTweetBean>> listLists;
+    static List<GameInfBean> bigTitleGame;
+
 
     private List<String> adPicData;
     public List<TitleAd> adPicUrl;
@@ -199,8 +202,10 @@ public class RecommendFragment extends BaseFragment {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.tweet) {
                 Toast.makeText(mContext, "特推", Toast.LENGTH_SHORT).show();
-            }else if(id==R.id.cl_recommend){
+            } else if (id == R.id.cl_recommend) {
                 Toast.makeText(mContext, "玩家推", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.csl_ad_game) {
+                Toast.makeText(mContext, "bigtitle", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -251,16 +256,21 @@ public class RecommendFragment extends BaseFragment {
         //测试数据
 //        mGameInfData = GameInfBean.getGameInfData();
         mAdInfData = AdvertisementBean.getAdInfData();
-        mMyGameData = getAppList();
+        List<MyGameBean> mMyGameData = getAppList();
 
         mGameInfData = new LinkedList<>();
         dailyTweetBeans = new LinkedList<>();
+        newHotBeans = new LinkedList<>();
         playerRecommendBeans = new LinkedList<>();
         newGameBeans = new LinkedList<>();
         testGameBeans = new LinkedList<>();
+        listLists = new LinkedList<>();
+        miniGameBeans = new LinkedList<>();
+        bigTitleGame = new LinkedList<>();
         types = new LinkedList<>();
         titles = new LinkedList<>();
         adPicUrl = new LinkedList<>();
+        hotBeans = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
         handler = new Handler() {
             @Override
@@ -284,6 +294,8 @@ public class RecommendFragment extends BaseFragment {
     }
 
 
+    private int adListLength;
+
     private void getJSON(String URL) {
         MvcModelImp mvcModelImp = new MvcModelImp();
         mvcModelImp.getModel(URL, new OKutil() {
@@ -291,10 +303,20 @@ public class RecommendFragment extends BaseFragment {
             public void onOk(String json) {
                 getGameInf(json);
                 getGameAdPic(json);
-                getDailyTweet(json);
-                getNewGame(json);
-                getTestGame(json);
-                getRecommend(json);
+                //List
+                for (int i = 0; i < 22; i++) {
+                    getListInf(i, json);
+                }
+//                getDailyTweet(json);
+//                getNewGame(json);
+//                getTestGame(json);
+//                getRecommend(json);
+//                getInterest(json);
+//                getMiniGame(json);
+//                getHot(json);
+//                getNewHotGame(json);
+
+
                 handler.sendEmptyMessage(1);
             }
 
@@ -303,6 +325,370 @@ public class RecommendFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private void getListInf(int i, String json) {
+        try {
+            JSONArray jsonArrayAdList = getJsonList(json);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(i);
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+            String ext;
+            JSONObject jsonObjectExt;
+            String arrayList;
+            JSONArray jsonArrayAd;
+
+            switch (Integer.parseInt(adTweet.getString("type"))) {
+                case 1:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject ad = jsonArrayAd.getJSONObject(j);
+
+                        String tweetTime = ad.getString("ext");
+                        JSONObject jsonTweetTime = new JSONObject(tweetTime);
+
+                        String dateLineS = jsonTweetTime.getString("dateline");
+                        int dateline = Integer.parseInt(dateLineS);
+
+                        long temp = (long) dateline * 1000;
+                        Timestamp ts = new Timestamp(temp);
+                        @SuppressLint("SimpleDateFormat")
+                        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format));
+
+                        String tsStr = dateFormat.format(ts);
+
+                        DailyTweetBean dailyTweetBean = new DailyTweetBean();
+                        dailyTweetBean.setTweetName(ad.getString("appname"));
+                        dailyTweetBean.setTweetPicUrl(ad.getString("icopath"));
+                        dailyTweetBean.setTweetTime(tsStr);
+                        dailyTweetBeans.add(dailyTweetBean);
+                    }
+                    break;
+                case 19:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject ad = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean newGameBean = new DailyTweetBean();
+
+                        String tweetTime = ad.getString("ext");
+                        JSONObject jsonTweetTime = new JSONObject(tweetTime);
+
+                        String updateTime = jsonTweetTime.getString("desc");
+
+                        int dateLine = Integer.parseInt(jsonTweetTime.getString("dateline"));
+
+                        long temp = (long) dateLine * 1000;
+                        Timestamp ts = new Timestamp(temp);
+                        @SuppressLint("SimpleDateFormat")
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        String[] weekDay = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+                        Calendar calendar = Calendar.getInstance();
+                        String datetime = dateFormat.format(ts);
+                        Date date = null;
+                        try {
+                            date = dateFormat.parse(datetime);
+                            calendar.setTime(date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        int w = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+                        if (w < 0) {
+                            w = 0;
+                        }
+
+                        newGameBean.setNewGameTime(updateTime);
+                        newGameBean.setTweetName(ad.getString("appname"));
+                        newGameBean.setTweetPicUrl(ad.getString("icopath"));
+                        newGameBean.setTweetTime(weekDay[w]);
+                        newGameBeans.add(newGameBean);
+                    }
+                    break;
+                case 23:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+
+                        JSONObject testGame = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean testGameBean = new DailyTweetBean();
+                        testGameBean.setTweetName(testGame.getString("appname"));
+                        testGameBean.setTweetPicUrl(testGame.getString("icopath"));
+                        testGameBeans.add(testGameBean);
+                    }
+                    break;
+                case 24:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject recommend = jsonArrayAd.getJSONObject(i);
+                        String gamePart = recommend.getString("game");
+                        JSONObject gamePartJson = new JSONObject(gamePart);
+
+                        PlayerRecommendBean playerRecommendBean = new PlayerRecommendBean();
+                        playerRecommendBean.setRecommendWord(recommend.getString("content"));
+                        playerRecommendBean.setPlayerName(recommend.getString("nick"));
+                        playerRecommendBean.setRecommendNum(recommend.getString("recommend_num"));
+                        playerRecommendBean.setHeadPic(recommend.getString("sface"));
+
+                        playerRecommendBean.setGameName(gamePartJson.getString("appname"));
+                        playerRecommendBean.setGamePicUrl(gamePartJson.getString("icopath"));
+
+                        playerRecommendBeans.add(playerRecommendBean);
+
+                    }
+                    break;
+                case 25:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject miniGameJson = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean miniGameBean = new DailyTweetBean();
+                        String share = miniGameJson.getString("share");
+                        JSONObject shareJson = new JSONObject(share);
+                        miniGameBean.setTweetName(miniGameJson.getString("name"));
+                        miniGameBean.setTweetPicUrl(shareJson.getString("cover"));
+                        miniGameBeans.add(miniGameBean);
+
+                    }
+                    break;
+                case 15:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length() - 1; j++) {
+                        JSONObject hotImg = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean hotBean = new DailyTweetBean();
+                        hotBean.setTweetPicUrl(hotImg.getString("img_v50"));
+                        hotBeans.add(hotBean);
+                    }
+                case 26:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject newHot = jsonArrayAd.getJSONObject(j);
+                        PlayerRecommendBean newHotBean = new PlayerRecommendBean();
+                        newHotBean.setGameName(newHot.getString("appname"));
+                        newHotBean.setGamePicUrl(newHot.getString("icopath"));
+
+                        String eventRecord = newHot.getString("event_record");
+                        JSONObject eventRecordJson = new JSONObject(eventRecord);
+
+                        String dateLineS = eventRecordJson.getString("dateline");
+                        long dateline = (long) Integer.parseInt(dateLineS) * 1000;
+                        Timestamp timestamp = new Timestamp(dateline);
+                        @SuppressLint("SimpleDateFormat")
+                        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_with_line));
+                        String date = dateFormat.format(timestamp);
+                        newHotBean.setRecommendWord(date + "  " + eventRecordJson.getString("content"));
+                        newHotBeans.add(newHotBean);
+
+                    }
+                    break;
+                case 18:
+                case 6:
+                case 4:
+                    GameInfBean bigTitle = new GameInfBean();
+                    bigTitle.setGameInf(adTweet.getString("desc"));
+                    bigTitle.setGameImgUrl(adTweet.getString("img"));
+                    bigTitleGame.add(bigTitle);
+                    break;
+                case 2:
+                case 21:
+                case 13:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    List<DailyTweetBean> studyGameBeans = new LinkedList<>();
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject studyGame = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean studyGameBean = new DailyTweetBean();
+                        studyGameBean.setTweetPicUrl(studyGame.getString("icopath"));
+                        studyGameBean.setTweetName(studyGame.getString("appname"));
+                        studyGameBeans.add(studyGameBean);
+                    }
+                    listLists.add(studyGameBeans);
+                    break;
+                case 22:
+                    ext = adTweet.getString("ext");
+                    jsonObjectExt = new JSONObject(ext);
+                    arrayList = jsonObjectExt.getString("list");
+                    jsonArrayAd = new JSONArray(arrayList);
+                    List<DailyTweetBean> onlineGameBeans = new LinkedList<>();
+                    for (int j = 0; j < jsonArrayAd.length(); j++) {
+                        JSONObject studyGame = jsonArrayAd.getJSONObject(j);
+                        DailyTweetBean studyGameBean = new DailyTweetBean();
+                        studyGameBean.setTweetPicUrl(studyGame.getString("logo"));
+                        studyGameBean.setTweetName(studyGame.getString("name"));
+                        onlineGameBeans.add(studyGameBean);
+                    }
+                    listLists.add(onlineGameBeans);
+                    break;
+                default:
+                    break;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private JSONArray getJsonList(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            return jsonArrayAdList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void getNewHotGame(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(7);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+                JSONObject newHot = jsonArrayAd.getJSONObject(i);
+                PlayerRecommendBean newHotBean = new PlayerRecommendBean();
+                newHotBean.setGameName(newHot.getString("appname"));
+                newHotBean.setGamePicUrl(newHot.getString("icopath"));
+
+                String eventRecord = newHot.getString("event_record");
+                JSONObject eventRecordJson = new JSONObject(eventRecord);
+
+                String dateLineS = eventRecordJson.getString("dateline");
+                long dateline = (long) Integer.parseInt(dateLineS) * 1000;
+                Timestamp timestamp = new Timestamp(dateline);
+                @SuppressLint("SimpleDateFormat")
+                DateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_with_line));
+                String date = dateFormat.format(timestamp);
+                newHotBean.setRecommendWord(date + "  " + eventRecordJson.getString("content"));
+                newHotBeans.add(newHotBean);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getHot(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(6);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length() - 1; i++) {
+                JSONObject hotImg = jsonArrayAd.getJSONObject(i);
+                DailyTweetBean hotBean = new DailyTweetBean();
+                hotBean.setTweetPicUrl(hotImg.getString("img_v50"));
+                hotBeans.add(hotBean);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getMiniGame(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(5);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+            String ext = adTweet.getString("ext");
+            JSONObject jsonObjectExt = new JSONObject(ext);
+
+            String arrayList = jsonObjectExt.getString("list");
+            JSONArray jsonArrayAd = new JSONArray(arrayList);
+
+            for (int i = 0; i < jsonArrayAd.length(); i++) {
+                JSONObject miniGameJson = jsonArrayAd.getJSONObject(i);
+                DailyTweetBean miniGameBean = new DailyTweetBean();
+                String share = miniGameJson.getString("share");
+                JSONObject shareJson = new JSONObject(share);
+                miniGameBean.setTweetName(miniGameJson.getString("name"));
+                miniGameBean.setTweetPicUrl(shareJson.getString("cover"));
+                miniGameBeans.add(miniGameBean);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getInterest(String json) {
+        try {
+            JSONObject jsonArray = new JSONObject(json);
+            String jsonResult = jsonArray.getString("result");
+            JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            JSONArray jsonArrayAdList = new JSONArray(adListArray);
+            JSONObject adTweet = jsonArrayAdList.getJSONObject(4);
+
+            titles.add(adTweet.getString("title"));
+            types.add(Integer.parseInt(adTweet.getString("type")));
+
+//            String ext = adTweet.getString("ext");
+//            JSONObject jsonObjectExt = new JSONObject(ext);
+//
+//            String arrayList = jsonObjectExt.getString("list");
+//            JSONArray jsonArrayAd = new JSONArray(arrayList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getRecommend(String json) {
@@ -516,10 +902,14 @@ public class RecommendFragment extends BaseFragment {
     }
 
     private void getGameInf(String json) {
+        JSONArray jsonArrayAdList = null;
         try {
             JSONObject jsonArray = new JSONObject(json);
             String jsonResult = jsonArray.getString("result");
             JSONObject jsonResultObj = new JSONObject(jsonResult);
+            String adListArray = jsonResultObj.getString("adList");
+            jsonArrayAdList = new JSONArray(adListArray);
+
             String jsonRecGame = jsonResultObj.getString("recGame");
             JSONArray jsonArrayRecGame = new JSONArray(jsonRecGame);
             for (int i = 0; i < jsonArrayRecGame.length(); i++) {
@@ -535,6 +925,7 @@ public class RecommendFragment extends BaseFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        adListLength=jsonArrayAdList.length();
     }
 
     private List<MyGameBean> getAppList() {

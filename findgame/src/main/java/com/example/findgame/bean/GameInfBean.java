@@ -20,6 +20,7 @@ public class GameInfBean implements Serializable, MultiItemEntity {
     private String gameInf;
     @SerializedName("icon_path")
     private String gameImgUrl;
+    private String titleName;
 
     public int getType() {
         return type;
@@ -40,7 +41,7 @@ public class GameInfBean implements Serializable, MultiItemEntity {
         this.titleName = titleName;
     }
 
-    private String titleName;
+
 
     public GameInfBean() {
 

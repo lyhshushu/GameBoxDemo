@@ -17,4 +17,7 @@
     <string name="times">次</string>
     <string name="daily_tweet">每日特推</string>
     <string name="date_format">M月d日</string>
+    <string name="recently">最近有</string>
+    <string name="recommend_people">人推荐</string>
+    <string name="date_with_line">MM-dd</string>
 </resources>
