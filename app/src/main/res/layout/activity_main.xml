@@ -10,8 +10,8 @@
     <RelativeLayout
         android:id="@+id/rl_search"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@color/head_green"
+        android:layout_height="50dp"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,7 +21,7 @@
         <LinearLayout
             android:id="@+id/ll_search"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:layout_toStartOf="@+id/mail"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
@@ -32,10 +32,10 @@
 
             <ImageView
                 android:id="@+id/image_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/m4399_png_common_search_entry_logo" />
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/m4399_png_friend_search_btn_normal" />
 
             <EditText
                 android:id="@+id/ev_search"
@@ -55,7 +55,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="25sp"
             android:layout_height="23dp"
-            android:background="@drawable/m4399_png_toolbar_message_nor_white"/>
+            android:src="@drawable/m4399_png_actionbar_item_msg_box_normal"/>
         <ImageView
             android:id="@+id/image_download"
             android:layout_width="23dp"
@@ -63,7 +63,7 @@
             android:layout_marginEnd="21.5dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/m4399_png_toolbar_download_full"/>
+            android:background="@drawable/m4399_png_toolbar_download_nor"/>
 
     </RelativeLayout>
     <com.example.androidlib.view.IndexViewPager

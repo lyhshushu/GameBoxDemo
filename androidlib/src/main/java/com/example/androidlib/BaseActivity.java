@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
         ImmersionBar.with(activity)
                 .fitsSystemWindows(true)
-                .statusBarColor(R.color.head_green)
+                .statusBarColor(R.color.white)
                 .statusBarDarkFont(true)
                 .keyboardEnable(true)
                 .init();
@@ -64,11 +64,13 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     /**
      * 点击时间
+     *
      * @param v 控件
      */
-    protected void widgetClick(View v){
+    protected void widgetClick(View v) {
 
     }
+
     @Override
     public void onClick(View v) {
         if (!isFastClick()) {
@@ -96,6 +98,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     /**
      * 绑定监听事件
      */
-    protected void bindListener(){}
+    protected void bindListener() {
+    }
 
 }

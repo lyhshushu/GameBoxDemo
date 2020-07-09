@@ -67,9 +67,10 @@ public class GameInfAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, B
             flagList.add(0);
             addItemType(21, R.layout.item_daily_tweet);
             addItemType(13, R.layout.item_daily_tweet);
-            addItemType(22,R.layout.item_daily_tweet);
+            addItemType(22, R.layout.item_daily_tweet);
             addItemType(6, R.layout.item_ad_inf);
-            addItemType(4,R.layout.item_ad_inf);
+            addItemType(4, R.layout.item_ad_inf);
+            addItemType(5, R.layout.item_ad_inf);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -278,6 +279,7 @@ public class GameInfAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, B
             case 18:
             case 6:
             case 4:
+            case 5:
                 GameInfBean bigTitleGame = (GameInfBean) item;
                 bigTitleBeans = RecommendFragment.bigTitleGame;
                 GameInfBean bigTitle = bigTitleBeans.get(flagList.get(9));

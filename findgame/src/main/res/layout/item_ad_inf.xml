@@ -34,8 +34,8 @@
         <ImageView
             android:id="@+id/ad_image"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@drawable/m4399_png_crack_game_carouse_bg"
+            android:layout_height="130dp"
+            android:src="@drawable/m4399_png_crack_game_carouse_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/it_new_game"
+
+        android:title="新游" />
+    <item
+        android:id="@+id/it_appointment"
+        android:title="新游" />
+    <item
+        android:id="@+id/it_net_game"
+        android:title="新游" />
+    <item
+        android:id="@+id/it_single_game"
+        android:title="新游" />
+    <item
+        android:id="@+id/it_hot_game"
+        android:title="新游" />
+
+</menu>
