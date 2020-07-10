@@ -30,7 +30,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:background="#123456" />
+                    android:background="#123456"
+                    android:scaleType="fitXY" />
 
                 <ImageView
                     android:id="@+id/pic_two"
@@ -40,7 +41,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_weight="1"
-                    android:background="#123456" />
+                    android:background="#123456"
+                    android:scaleType="fitXY" />
             </LinearLayout>
 
             <LinearLayout

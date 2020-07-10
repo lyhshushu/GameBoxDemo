@@ -12,16 +12,16 @@ import com.example.findgame.bean.AllRankBean;
 
 import java.util.List;
 
-public class RankNewGameAdapter extends BaseQuickAdapter<AllRankBean, BaseViewHolder> {
-    public RankNewGameAdapter(int layoutResId, @Nullable List<AllRankBean> data) {
+public class RankAppointmentGameAdapter extends BaseQuickAdapter<AllRankBean, BaseViewHolder> {
+    public RankAppointmentGameAdapter(int layoutResId, @Nullable List<AllRankBean> data) {
         super(layoutResId, data);
     }
 
-    public RankNewGameAdapter(@Nullable List<AllRankBean> data) {
+    public RankAppointmentGameAdapter(@Nullable List<AllRankBean> data) {
         super(data);
     }
 
-    public RankNewGameAdapter(int layoutResId) {
+    public RankAppointmentGameAdapter(int layoutResId) {
         super(layoutResId);
     }
 
@@ -31,17 +31,14 @@ public class RankNewGameAdapter extends BaseQuickAdapter<AllRankBean, BaseViewHo
         helper.setText(R.id.tv_rank_new_game_name, item.getGameName())
                 .setText(R.id.tv_rank_new_game_inf, item.getGameInf())
                 .setText(R.id.tv_rank_new_game_rank, item.getRank())
-                .setText(R.id.tv_rank_new_game_content, item.getGameContent())
                 .addOnClickListener(R.id.cl_rank_new_game)
-                .addOnClickListener(R.id.bt_rank_new_game_download)
-                .setGone(R.id.bt_rank_new_game_appointment, false);
-
+                .addOnClickListener(R.id.bt_rank_new_game_appointment)
+                .setGone(R.id.bt_rank_new_game_download, false);
         if (item.getGameContent() == null) {
             helper.setGone(R.id.tv_rank_new_game_content, false);
         } else {
             helper.setVisible(R.id.tv_rank_new_game_content, true)
                     .setText(R.id.tv_rank_new_game_content, item.getGameContent());
         }
-
     }
 }

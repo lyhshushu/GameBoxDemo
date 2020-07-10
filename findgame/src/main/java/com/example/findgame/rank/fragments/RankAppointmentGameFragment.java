@@ -3,14 +3,12 @@ package com.example.findgame.rank.fragments;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.androidlib.BaseFragment;
 import com.example.findgame.R;
 import com.example.findgame.R2;
@@ -31,15 +29,16 @@ import butterknife.BindView;
 
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
-public class RankNewGameFragment extends BaseFragment {
+public class RankAppointmentGameFragment extends BaseFragment {
     private final static int OVER_10000 = 10000;
 
     @BindView(R2.id.rv_rank_new_game)
     RecyclerView rvRankNewGame;
-    private List<AllRankBean> rankNewGameBeans;
+
+    private List<AllRankBean> rankAppointmentGameBeans;
     private Context mContext;
     private Handler handler;
-    private RankNewGameAdapter rankNewGameAdapter;
+    private RankAppointmentGameAdapter rankAppointmentGameAdapter;
 
     @Override
     protected int bindLayout() {
@@ -50,36 +49,36 @@ public class RankNewGameFragment extends BaseFragment {
     protected void initView() {
         mContext = getContext();
 
-        rankNewGameAdapter = new RankNewGameAdapter(R.layout.item_rank_new_game);
+        rankAppointmentGameAdapter = new RankAppointmentGameAdapter(R.layout.item_rank_new_game);
         rvRankNewGame.setLayoutManager(new LinearLayoutManager(mContext));
         rvRankNewGame.addItemDecoration(new RecyclerDivider(mContext));
-        rvRankNewGame.setAdapter(rankNewGameAdapter);
+        rvRankNewGame.setAdapter(rankAppointmentGameAdapter);
     }
 
     @Override
     protected void bindListener() {
-        rankNewGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        rankAppointmentGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
             if (id == R.id.cl_rank_new_game) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, rankAppointmentGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
             }
-            if (id == R.id.bt_rank_new_game_download) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
+            if (id == R.id.bt_rank_new_game_appointment) {
+                Toast.makeText(mContext, rankAppointmentGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     protected void applyData() {
-        rankNewGameBeans = new LinkedList<>();
-        getJson(BASEURL + "//app/android/v4.2.2/game-top-p-1-startKey--n-20.html");
+        rankAppointmentGameBeans = new LinkedList<>();
+        getJson(BASEURL + "//app/android/v4.2.2/game-top-startKey--type-subscribe-n-20.html");
         handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    rankNewGameAdapter.setNewData(rankNewGameBeans);
-                    rankNewGameAdapter.notifyDataSetChanged();
+                    rankAppointmentGameAdapter.setNewData(rankAppointmentGameBeans);
+                    rankAppointmentGameAdapter.notifyDataSetChanged();
                 }
             }
         };
@@ -90,7 +89,7 @@ public class RankNewGameFragment extends BaseFragment {
         mvcModelImp.getModel(url, new OKutil() {
             @Override
             public void onOk(String json) {
-                getRankNewGame(json);
+                getRankAppointmentGame(json);
                 handler.sendEmptyMessage(1);
             }
 
@@ -101,7 +100,7 @@ public class RankNewGameFragment extends BaseFragment {
         });
     }
 
-    private void getRankNewGame(String json) {
+    private void getRankAppointmentGame(String json) {
         try {
             JSONObject allJson = new JSONObject(json);
             String result = allJson.getString("result");
@@ -115,50 +114,21 @@ public class RankNewGameFragment extends BaseFragment {
                 newGameBean.setGameName(newGameJson.getString("appname"));
                 newGameBean.setGamePic(newGameJson.getString("icopath"));
                 String newGameInf = null;
-                int downNum = Integer.parseInt(newGameJson.getString("num_download"));
-                float size = Float.parseFloat(newGameJson.getString("size"));
-                String gameSize = null;
-                int intSize;
-                DecimalFormat decimalFormat = new DecimalFormat("####.##");
-                if (size > 1024) {
-                    float floatSize = Float.parseFloat(decimalFormat.format(size / 1024));
-                    if (floatSize == (int) floatSize) {
-                        intSize = (int) floatSize;
-                        gameSize = intSize + "G";
-                    } else {
-                        gameSize = floatSize + "G";
-                    }
+                int subscribeNum = Integer.parseInt(newGameJson.getString("num_subscribe"));
+                DecimalFormat decimalFormat = new DecimalFormat("####.#");
+                if (subscribeNum > OVER_10000) {
+                    float floatNum = (float) subscribeNum / OVER_10000;
+                    newGameInf = decimalFormat.format(floatNum) + getString(R.string.over_10000_appointment);
                 } else {
-                    if (size == (int) size) {
-                        intSize = (int) size;
-                        gameSize = intSize + "M";
-                    } else {
-                        gameSize = size + "M";
-                    }
-                }
-
-                if (downNum > OVER_10000) {
-                    downNum = downNum / OVER_10000;
-                    newGameInf = downNum + mContext.getString(R.string.over_10000) + mContext.getString(R.string.download) + "  " + gameSize;
-                } else {
-                    newGameInf = downNum + mContext.getString(R.string.times) + mContext.getString(R.string.download) + "  " + gameSize;
+                    newGameInf = subscribeNum + getString(R.string.over_appointment);
                 }
                 newGameBean.setGameInf(newGameInf);
-
-                String eventRecord = newGameJson.getString("event_record");
-                JSONObject gameContent = new JSONObject(eventRecord);
-                if (gameContent.isNull("content")) {
-                    newGameBean.setGameContent(null);
-                } else {
-                    newGameBean.setGameContent(gameContent.getString("content"));
-                }
-                rankNewGameBeans.add(newGameBean);
+                newGameBean.setGameContent(newGameJson.getString("preheat_time"));
+                rankAppointmentGameBeans.add(newGameBean);
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }
+

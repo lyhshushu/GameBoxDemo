@@ -31,15 +31,15 @@ import butterknife.BindView;
 
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
-public class RankNewGameFragment extends BaseFragment {
+public class RankHotGameFragment extends BaseFragment {
     private final static int OVER_10000 = 10000;
 
     @BindView(R2.id.rv_rank_new_game)
     RecyclerView rvRankNewGame;
-    private List<AllRankBean> rankNewGameBeans;
+    private List<AllRankBean> rankHotGameBeans;
     private Context mContext;
     private Handler handler;
-    private RankNewGameAdapter rankNewGameAdapter;
+    private RankNewGameAdapter rankHotGameAdapter;
 
     @Override
     protected int bindLayout() {
@@ -50,36 +50,36 @@ public class RankNewGameFragment extends BaseFragment {
     protected void initView() {
         mContext = getContext();
 
-        rankNewGameAdapter = new RankNewGameAdapter(R.layout.item_rank_new_game);
+        rankHotGameAdapter = new RankNewGameAdapter(R.layout.item_rank_new_game);
         rvRankNewGame.setLayoutManager(new LinearLayoutManager(mContext));
         rvRankNewGame.addItemDecoration(new RecyclerDivider(mContext));
-        rvRankNewGame.setAdapter(rankNewGameAdapter);
+        rvRankNewGame.setAdapter(rankHotGameAdapter);
     }
 
     @Override
     protected void bindListener() {
-        rankNewGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        rankHotGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
             if (id == R.id.cl_rank_new_game) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, rankHotGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
             }
             if (id == R.id.bt_rank_new_game_download) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, rankHotGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     protected void applyData() {
-        rankNewGameBeans = new LinkedList<>();
-        getJson(BASEURL + "//app/android/v4.2.2/game-top-p-1-startKey--n-20.html");
+        rankHotGameBeans = new LinkedList<>();
+        getJson(BASEURL + "/app/android/v4.2.2/game-top-startKey--type-hot-n-20.html");
         handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    rankNewGameAdapter.setNewData(rankNewGameBeans);
-                    rankNewGameAdapter.notifyDataSetChanged();
+                    rankHotGameAdapter.setNewData(rankHotGameBeans);
+                    rankHotGameAdapter.notifyDataSetChanged();
                 }
             }
         };
@@ -90,7 +90,7 @@ public class RankNewGameFragment extends BaseFragment {
         mvcModelImp.getModel(url, new OKutil() {
             @Override
             public void onOk(String json) {
-                getRankNewGame(json);
+                getRankHotGame(json);
                 handler.sendEmptyMessage(1);
             }
 
@@ -101,7 +101,7 @@ public class RankNewGameFragment extends BaseFragment {
         });
     }
 
-    private void getRankNewGame(String json) {
+    private void getRankHotGame(String json) {
         try {
             JSONObject allJson = new JSONObject(json);
             String result = allJson.getString("result");
@@ -152,7 +152,7 @@ public class RankNewGameFragment extends BaseFragment {
                 } else {
                     newGameBean.setGameContent(gameContent.getString("content"));
                 }
-                rankNewGameBeans.add(newGameBean);
+                rankHotGameBeans.add(newGameBean);
             }
 
 

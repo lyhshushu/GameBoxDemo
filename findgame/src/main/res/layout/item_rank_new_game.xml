@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_rank_new_game"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_rank_new_game"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="90dp">
 
-    <TextView
+    <com.example.androidlib.view.AutoResizeTextView
         android:id="@+id/tv_rank_new_game_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="20dp"
-        android:fontFamily="sans-serif-medium"
         android:textColor="#d9000000"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,29 +27,48 @@
         app:layout_constraintStart_toEndOf="@id/tv_rank_new_game_rank"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_rank_new_game_name"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="@dimen/dp_10"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="#d9000000"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_rank_new_game"
         app:layout_constraintStart_toEndOf="@id/iv_rank_new_game"
-        app:layout_constraintTop_toTopOf="@id/iv_rank_new_game"
-        tools:text="模拟木筏生存" />
+        app:layout_constraintTop_toTopOf="@id/iv_rank_new_game">
 
-    <TextView
-        android:id="@+id/tv_rank_new_game_inf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:maxLines="2"
-        app:layout_constraintStart_toStartOf="@id/tv_rank_new_game_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_rank_new_game_name"
-        tools:text="模拟木筏生存" />
+        <TextView
+            android:id="@+id/tv_rank_new_game_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#d9000000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="模拟木筏生存" />
+
+        <TextView
+            android:id="@+id/tv_rank_new_game_inf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@id/tv_rank_new_game_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_rank_new_game_name"
+            tools:text="模拟木筏生存" />
+
+        <TextView
+            android:id="@+id/tv_rank_new_game_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@id/tv_rank_new_game_inf"
+            app:layout_constraintTop_toBottomOf="@id/tv_rank_new_game_inf"
+            android:layout_marginEnd="10dp"
+            tools:text="模拟木筏生存" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <Button
         android:id="@+id/bt_rank_new_game_download"
@@ -63,7 +80,18 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_rank_new_game_name"/>
+        app:layout_constraintTop_toTopOf="@id/iv_rank_new_game" />
+    <Button
+        android:id="@+id/bt_rank_new_game_appointment"
+        android:layout_width="60dp"
+        android:layout_height="28dp"
+        android:background="@drawable/update_button"
+        android:text="@string/appointment"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_rank_new_game"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

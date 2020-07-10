@@ -6,7 +6,8 @@ public class AllRankBean implements Serializable {
     private String gameName;
     private String gamePic;
     private String gameInf;
-    private int rank;
+    private String rank;
+    private String gameContent;
 
     public String getGameName() {
         return gameName;
@@ -32,11 +33,19 @@ public class AllRankBean implements Serializable {
         this.gameInf = gameInf;
     }
 
-    public int getRank() {
+    public String getRank() {
         return rank;
     }
 
-    public void setRank(int rank) {
+    public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public String getGameContent() {
+        return gameContent;
+    }
+
+    public void setGameContent(String gameContent) {
+        this.gameContent = gameContent;
     }
 }

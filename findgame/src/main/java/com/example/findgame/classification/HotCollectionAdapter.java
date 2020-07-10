@@ -3,6 +3,7 @@ package com.example.findgame.classification;
 import android.graphics.Outline;
 import android.os.Build;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.example.androidlib.view.ChildUnClickableConstraintLayout;
+import com.example.androidlib.view.MyHorizontalRecyclerView;
 import com.example.findgame.R;
 import com.example.findgame.bean.AllClassificationBean;
 
@@ -41,8 +44,7 @@ public class HotCollectionAdapter extends BaseQuickAdapter<AllClassificationBean
         helper.setText(R.id.tv_collection_num, item.getCollectionNum() + mContext.getString(R.string.kind))
                 .addOnClickListener(R.id.cl_hot_collection_card);
 
-
-        ConstraintLayout constraintLayout = helper.getView(R.id.cl_hot_collection_card);
+        ChildUnClickableConstraintLayout constraintLayout = helper.getView(R.id.cl_hot_collection_card);
         constraintLayout.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
@@ -51,8 +53,7 @@ public class HotCollectionAdapter extends BaseQuickAdapter<AllClassificationBean
         });
         constraintLayout.setClipToOutline(true);
 
-
-        RecyclerView rvLogo = helper.getView(R.id.rv_list_game);
+        MyHorizontalRecyclerView rvLogo = helper.getView(R.id.rv_list_game);
         MiniLogAdapter miniLogAdapter = new MiniLogAdapter(R.layout.item_logo_pic);
         LinearLayoutManager linearLayoutManagerMiniLogo = new LinearLayoutManager(mContext);
         linearLayoutManagerMiniLogo.setOrientation(RecyclerView.HORIZONTAL);

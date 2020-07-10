@@ -21,13 +21,11 @@ import com.example.findgame.R2;
 import com.example.findgame.bean.AllClassificationBean;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.LineNumberReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -96,6 +94,12 @@ public class ClassificationFragment extends BaseFragment {
                 Toast.makeText(mContext, gameLogoBean.getName() + "logo", Toast.LENGTH_SHORT).show();
             }
         });
+        tagsTypeAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            int id = view.getId();
+            if (id == R.id.cl_classification_tags) {
+                Toast.makeText(mContext, tagsBeans.get(position).getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         hotCollectionAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
@@ -119,7 +123,7 @@ public class ClassificationFragment extends BaseFragment {
         gameLogoBeans = new LinkedList<>();
         hotCollectionBeans = new LinkedList<>();
         tagsBeans = new LinkedList<>();
-        getJSON(BASEURL + "/android/box/game/v3.8/custom-category-startKey--n-20.html");
+        getJson(BASEURL + "/android/box/game/v3.8/custom-category-startKey--n-20.html");
         handler = new Handler() {
             @SuppressLint("HandlerLeak")
             @Override
@@ -140,7 +144,7 @@ public class ClassificationFragment extends BaseFragment {
 
     }
 
-    private void getJSON(String url) {
+    private void getJson(String url) {
         MvcModelImp mvcModelImp = new MvcModelImp();
         mvcModelImp.getModel(url, new OKutil() {
             @Override

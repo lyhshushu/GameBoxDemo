@@ -21,4 +21,7 @@
     <string name="recommend_people">人推荐</string>
     <string name="date_with_line">MM-dd</string>
     <string name="kind">款</string>
+    <string name="over_10000_appointment">万人预约</string>
+    <string name="over_appointment">人预约</string>
+    <string name="appointment">预约</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.findgame.classification;
 
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,14 +30,22 @@ public class TagsTypeAdapter extends BaseQuickAdapter<AllClassificationBean, Bas
 
     @Override
     protected void convert(BaseViewHolder helper, AllClassificationBean item) {
-        helper.setText(R.id.tv_tags_name,item.getName())
+        helper.setText(R.id.tv_tags_name, item.getName())
                 .addOnClickListener(R.id.cl_classification_tags);
 
-        RecyclerView rvTags=helper.getView(R.id.rv_tags);
-        TagsAdapter tagsAdapter=new TagsAdapter(R.layout.item_tags);
-        GridLayoutManager layoutManagerTags=new GridLayoutManager(mContext,4);
+        RecyclerView rvTags = helper.getView(R.id.rv_tags);
+        TagsAdapter tagsAdapter = new TagsAdapter(R.layout.item_tags);
+        GridLayoutManager layoutManagerTags = new GridLayoutManager(mContext, 4);
+        tagsAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            int id = view.getId();
+            if (id == R.id.tv_tags) {
+                Toast.makeText(mContext, item.getCollectionPicUrl().get(position), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         rvTags.setLayoutManager(layoutManagerTags);
         rvTags.setAdapter(tagsAdapter);
+
 
         tagsAdapter.setNewData(item.getCollectionPicUrl());
         tagsAdapter.notifyDataSetChanged();

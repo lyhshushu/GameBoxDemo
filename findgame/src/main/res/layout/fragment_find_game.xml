@@ -6,25 +6,24 @@
     android:orientation="vertical">
 
 
-    <com.androidkun.xtablayout.XTabLayout
+    <com.flyco.tablayout.SlidingTabLayout
         android:id="@+id/find_game_tab"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@color/white"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
-        app:xTabBackgroundColor="@color/white"
-        app:xTabIndicatorColor="@color/head_green"
-        app:xTabIndicatorHeight="2dp"
-
-        app:xTabIndicatorWidth="20dp"
-
-        app:xTabTextBold="false"
-        app:xTabTextColor="@color/black"
-        app:xTabTextSelectedBold="true" />
+        app:tl_indicator_color="@color/head_green"
+        app:tl_indicator_corner_radius="10dp"
+        app:tl_indicator_gravity="BOTTOM"
+        app:tl_indicator_height="3dp"
+        app:tl_indicator_margin_bottom="5dp"
+        app:tl_indicator_width="18dp"
+        app:tl_tab_space_equal="true"
+        app:tl_textBold="SELECT"
+        app:tl_textSelectColor="@color/head_green"
+        app:tl_textUnselectColor="@color/black" />
 
 
     <androidx.viewpager.widget.ViewPager

@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.graphics.Outline;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,6 +17,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -273,6 +277,7 @@ public class RecommendFragment extends BaseFragment {
         hotBeans = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
         handler = new Handler() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -284,6 +289,20 @@ public class RecommendFragment extends BaseFragment {
                         mGameInfData.add(4 * (i + 1), gameInfBean);
                         mGameInfAdapter.setNewData(mGameInfData);
                     }
+                    picOne.setOutlineProvider(new ViewOutlineProvider() {
+                        @Override
+                        public void getOutline(View view, Outline outline) {
+                            outline.setRoundRect(0,0,picOne.getWidth(),picOne.getHeight(),30);
+                        }
+                    });
+                    picTwo.setOutlineProvider(new ViewOutlineProvider() {
+                        @Override
+                        public void getOutline(View view, Outline outline) {
+                            outline.setRoundRect(0,0,picTwo.getWidth(),picTwo.getHeight(),30);
+                        }
+                    });
+                    picOne.setClipToOutline(true);
+                    picTwo.setClipToOutline(true);
                     Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
                     Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
                 }
@@ -421,7 +440,7 @@ public class RecommendFragment extends BaseFragment {
                     arrayList = jsonObjectExt.getString("list");
                     jsonArrayAd = new JSONArray(arrayList);
                     for (int j = 0; j < jsonArrayAd.length(); j++) {
-                        JSONObject recommend = jsonArrayAd.getJSONObject(i);
+                        JSONObject recommend = jsonArrayAd.getJSONObject(j);
                         String gamePart = recommend.getString("game");
                         JSONObject gamePartJson = new JSONObject(gamePart);
 

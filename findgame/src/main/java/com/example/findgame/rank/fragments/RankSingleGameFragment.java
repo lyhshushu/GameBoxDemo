@@ -3,7 +3,6 @@ package com.example.findgame.rank.fragments;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,15 +30,15 @@ import butterknife.BindView;
 
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
-public class RankNewGameFragment extends BaseFragment {
+public class RankSingleGameFragment extends BaseFragment {
     private final static int OVER_10000 = 10000;
 
     @BindView(R2.id.rv_rank_new_game)
     RecyclerView rvRankNewGame;
-    private List<AllRankBean> rankNewGameBeans;
+    private List<AllRankBean> rankSingleGameBeans;
     private Context mContext;
     private Handler handler;
-    private RankNewGameAdapter rankNewGameAdapter;
+    private RankNewGameAdapter rankSingleGameAdapter;
 
     @Override
     protected int bindLayout() {
@@ -50,36 +49,36 @@ public class RankNewGameFragment extends BaseFragment {
     protected void initView() {
         mContext = getContext();
 
-        rankNewGameAdapter = new RankNewGameAdapter(R.layout.item_rank_new_game);
+        rankSingleGameAdapter = new RankNewGameAdapter(R.layout.item_rank_new_game);
         rvRankNewGame.setLayoutManager(new LinearLayoutManager(mContext));
         rvRankNewGame.addItemDecoration(new RecyclerDivider(mContext));
-        rvRankNewGame.setAdapter(rankNewGameAdapter);
+        rvRankNewGame.setAdapter(rankSingleGameAdapter);
     }
 
     @Override
     protected void bindListener() {
-        rankNewGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        rankSingleGameAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             int id = view.getId();
             if (id == R.id.cl_rank_new_game) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, rankSingleGameBeans.get(position).getGameName(), Toast.LENGTH_SHORT).show();
             }
             if (id == R.id.bt_rank_new_game_download) {
-                Toast.makeText(mContext, rankNewGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, rankSingleGameBeans.get(position).getGameName() + getString(R.string.download), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     protected void applyData() {
-        rankNewGameBeans = new LinkedList<>();
-        getJson(BASEURL + "//app/android/v4.2.2/game-top-p-1-startKey--n-20.html");
+        rankSingleGameBeans = new LinkedList<>();
+        getJson(BASEURL + "//app/android/v4.2.2/game-top-startKey--type-single-n-20.html");
         handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    rankNewGameAdapter.setNewData(rankNewGameBeans);
-                    rankNewGameAdapter.notifyDataSetChanged();
+                    rankSingleGameAdapter.setNewData(rankSingleGameBeans);
+                    rankSingleGameAdapter.notifyDataSetChanged();
                 }
             }
         };
@@ -90,7 +89,7 @@ public class RankNewGameFragment extends BaseFragment {
         mvcModelImp.getModel(url, new OKutil() {
             @Override
             public void onOk(String json) {
-                getRankNewGame(json);
+                getRankSingleGame(json);
                 handler.sendEmptyMessage(1);
             }
 
@@ -101,7 +100,7 @@ public class RankNewGameFragment extends BaseFragment {
         });
     }
 
-    private void getRankNewGame(String json) {
+    private void getRankSingleGame(String json) {
         try {
             JSONObject allJson = new JSONObject(json);
             String result = allJson.getString("result");
@@ -152,7 +151,7 @@ public class RankNewGameFragment extends BaseFragment {
                 } else {
                     newGameBean.setGameContent(gameContent.getString("content"));
                 }
-                rankNewGameBeans.add(newGameBean);
+                rankSingleGameBeans.add(newGameBean);
             }
 
 

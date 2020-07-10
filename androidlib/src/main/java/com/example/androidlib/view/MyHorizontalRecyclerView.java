@@ -16,12 +16,6 @@ import androidx.viewpager.widget.ViewPager;
  */
 public class MyHorizontalRecyclerView extends RecyclerView {
 
-    private float lastX;
-    private float lastY;
-    private float newX;
-    private float newY;
-    private final static float MIN_MOVE_DIS = 10;
-
     public MyHorizontalRecyclerView(@NonNull Context context) {
         super(context);
     }
@@ -59,7 +53,6 @@ public class MyHorizontalRecyclerView extends RecyclerView {
         parent.requestDisallowInterceptTouchEvent(true);
         return super.dispatchTouchEvent(ev);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
