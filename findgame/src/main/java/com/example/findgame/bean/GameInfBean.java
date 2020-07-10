@@ -21,6 +21,7 @@ public class GameInfBean implements Serializable, MultiItemEntity {
     @SerializedName("icon_path")
     private String gameImgUrl;
     private String titleName;
+    private String gameId;
 
     public int getType() {
         return type;
@@ -91,8 +92,15 @@ public class GameInfBean implements Serializable, MultiItemEntity {
         return type;
     }
 
+    public String getGameId() {
+        return gameId;
+    }
 
-//    public static List<GameInfBean> getGameInfData() {
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    //    public static List<GameInfBean> getGameInfData() {
 //        List<GameInfBean> data = new LinkedList<>();
 //        data.add(new GameInfBean("部落冲突","10w+ 下载 107.52M","3D魔幻动作网游，11111", null));
 //        data.add(new GameInfBean("水果忍者", "10w+ 下载 107.53M","3D魔幻动作网游，22222", null));

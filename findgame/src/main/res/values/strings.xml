@@ -24,4 +24,5 @@
     <string name="over_10000_appointment">万人预约</string>
     <string name="over_appointment">人预约</string>
     <string name="appointment">预约</string>
+    <string name="do_like_reason">不喜欢这个游戏是因为：</string>
 </resources>

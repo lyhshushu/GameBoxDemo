@@ -31,6 +31,8 @@ public class LikeGameAdapter extends BaseQuickAdapter<LikeGameBean, BaseViewHold
         helper.setText(R.id.game_name, item.getName())
                 .setText(R.id.game_download, item.getGameInf())
                 .setText(R.id.game_inf_detail, item.getGameContext())
-                .setGone(R.id.game_video, false);
+                .setGone(R.id.game_video, false)
+                .addOnClickListener(R.id.csl_game_inf)
+                .addOnClickListener(R.id.bt_download);
     }
 }

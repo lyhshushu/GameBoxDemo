@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.androidlib.BaseFragment;
 import com.example.findgame.R;
 import com.example.findgame.R2;
@@ -56,7 +59,12 @@ public class AlbumFragment extends BaseFragment {
 
     @Override
     protected void bindListener() {
-
+        albumAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            int id = view.getId();
+            if (id == R.id.cl_collection) {
+                Toast.makeText(mContext, albumBeans.get(position).getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

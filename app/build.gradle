@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.gameboxdemo"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -64,4 +64,8 @@ dependencies {
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     // fragment快速实现
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
+    //编译完成的ijk player
+    implementation 'com.github.thiagooo0:lmnplayer:v1.0.3'
+
 }

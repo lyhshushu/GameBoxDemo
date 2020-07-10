@@ -1,7 +1,9 @@
 package com.example.findgame.recommend;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.Outline;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.KeyEventDispatcher;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -202,6 +205,15 @@ public class RecommendFragment extends BaseFragment {
             GameInfBean gameInfBean = (GameInfBean) mGameInfData.get(position);
             if (id == R.id.csl_game_inf) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent();
+                //component启动（都可实现）
+//                ComponentName componentName=new ComponentName("com.example.gameboxdemo","com.example.gameboxdemo.GameInfActivity");
+//                intent.setComponent(componentName);
+                //隐式启动
+                intent.setAction("open_game_inf_activity");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("gameId",gameInfBean.getGameId());
+                this.startActivity(intent);
             } else if (id == R.id.bt_download) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.tweet) {
@@ -620,6 +632,7 @@ public class RecommendFragment extends BaseFragment {
                 gameInfBean.setGameDownload(jsonObject.getString("num_download"));
                 gameInfBean.setGameInf(jsonObject.getString("review"));
                 gameInfBean.setGameImgUrl(jsonObject.getString("icopath"));
+                gameInfBean.setGameId(jsonObject.getString("id"));
                 gameInfBean.setType(0);
                 mGameInfData.add(gameInfBean);
             }

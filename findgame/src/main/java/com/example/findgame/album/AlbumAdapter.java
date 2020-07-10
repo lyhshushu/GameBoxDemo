@@ -44,6 +44,7 @@ public class AlbumAdapter extends BaseQuickAdapter<AlbumBean, BaseViewHolder> {
         imageView.setClipToOutline(true);
 
         Glide.with(mContext).load(item.getPicUrl()).into(imageView);
-        helper.setText(R.id.tv_collection_name, item.getName());
+        helper.setText(R.id.tv_collection_name, item.getName())
+                .addOnClickListener(R.id.cl_collection);
     }
 }
