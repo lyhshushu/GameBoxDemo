@@ -72,6 +72,6 @@ dependencies {
     implementation project(path: ':androidlib')
     //沉浸式状态栏
     implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
-    //FlycoTabLayout
+    //FlycoTabLayout/SlidingTabLayout
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
 }

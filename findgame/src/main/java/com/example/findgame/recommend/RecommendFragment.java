@@ -205,15 +205,13 @@ public class RecommendFragment extends BaseFragment {
             GameInfBean gameInfBean = (GameInfBean) mGameInfData.get(position);
             if (id == R.id.csl_game_inf) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent();
+
                 //component启动（都可实现）
 //                ComponentName componentName=new ComponentName("com.example.gameboxdemo","com.example.gameboxdemo.GameInfActivity");
 //                intent.setComponent(componentName);
                 //隐式启动
-                intent.setAction("open_game_inf_activity");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("gameId",gameInfBean.getGameId());
-                this.startActivity(intent);
+                startGameInfActivity(mContext, gameInfBean.getGameId());
+
             } else if (id == R.id.bt_download) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.tweet) {
@@ -304,13 +302,13 @@ public class RecommendFragment extends BaseFragment {
                     picOne.setOutlineProvider(new ViewOutlineProvider() {
                         @Override
                         public void getOutline(View view, Outline outline) {
-                            outline.setRoundRect(0,0,picOne.getWidth(),picOne.getHeight(),30);
+                            outline.setRoundRect(0, 0, picOne.getWidth(), picOne.getHeight(), 30);
                         }
                     });
                     picTwo.setOutlineProvider(new ViewOutlineProvider() {
                         @Override
                         public void getOutline(View view, Outline outline) {
-                            outline.setRoundRect(0,0,picTwo.getWidth(),picTwo.getHeight(),30);
+                            outline.setRoundRect(0, 0, picTwo.getWidth(), picTwo.getHeight(), 30);
                         }
                     });
                     picOne.setClipToOutline(true);
@@ -335,7 +333,7 @@ public class RecommendFragment extends BaseFragment {
                 getGameInf(json);
                 getGameAdPic(json);
                 //List
-                for (int i = 0; i <adListLength ; i++) {
+                for (int i = 0; i < adListLength; i++) {
                     getListInf(i, json);
                 }
 
@@ -384,6 +382,7 @@ public class RecommendFragment extends BaseFragment {
                         String tsStr = dateFormat.format(ts);
 
                         DailyTweetBean dailyTweetBean = new DailyTweetBean();
+                        dailyTweetBean.setGameId(ad.getString("id"));
                         dailyTweetBean.setTweetName(ad.getString("appname"));
                         dailyTweetBean.setTweetPicUrl(ad.getString("icopath"));
                         dailyTweetBean.setTweetTime(tsStr);
@@ -587,7 +586,6 @@ public class RecommendFragment extends BaseFragment {
     }
 
 
-
     private void getGameAdPic(String json) {
         try {
             JSONObject jsonArray = new JSONObject(json);
@@ -639,7 +637,7 @@ public class RecommendFragment extends BaseFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        adListLength=jsonArrayAdList.length();
+        adListLength = jsonArrayAdList.length();
     }
 
     private List<MyGameBean> getAppList() {
@@ -659,4 +657,11 @@ public class RecommendFragment extends BaseFragment {
 //        PackageManager packageManager=getActivity().getPackageManager();
     }
 
+    public static void startGameInfActivity(Context context, String gameId) {
+        Intent intent = new Intent();
+        intent.setAction("open_game_inf_activity");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("gameId", gameId);
+        context.getApplicationContext().startActivity(intent);
+    }
 }

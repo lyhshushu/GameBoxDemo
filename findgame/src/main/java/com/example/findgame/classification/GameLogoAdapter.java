@@ -28,7 +28,7 @@ public class GameLogoAdapter extends BaseQuickAdapter<AllClassificationBean, Bas
     @Override
     protected void convert(BaseViewHolder helper, AllClassificationBean item) {
         Glide.with(mContext).load(item.getPicUrl()).into((ImageView) helper.getView(R.id.logo_pic));
-        helper.setText(R.id.tv_logo,item.getName())
+        helper.setText(R.id.tv_logo, item.getName())
                 .addOnClickListener(R.id.cl_logo);
     }
 }

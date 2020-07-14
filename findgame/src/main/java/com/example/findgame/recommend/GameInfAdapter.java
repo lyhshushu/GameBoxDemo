@@ -1,5 +1,6 @@
 package com.example.findgame.recommend;
 
+import android.content.Intent;
 import android.graphics.Outline;
 import android.os.Build;
 import android.view.View;
@@ -122,6 +123,7 @@ public class GameInfAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, B
                 dailyTweetAdapter.setOnItemChildClickListener((adapter, view, position) -> {
                     int id = view.getId();
                     if (id == R.id.icon_tweet_game) {
+                        RecommendFragment.startGameInfActivity(mContext,RecommendFragment.dailyTweetBeans.get(position).getGameId());
                         Toast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
                     }
                 });

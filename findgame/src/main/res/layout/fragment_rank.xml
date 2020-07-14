@@ -26,9 +26,7 @@
         app:tl_tab_space_equal="true"
         app:tl_textSelectColor="@color/white"
         app:tl_textUnselectColor="@color/black"
-
         />
-
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_rank_type"

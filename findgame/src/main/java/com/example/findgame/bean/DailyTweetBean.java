@@ -4,6 +4,11 @@ package com.example.findgame.bean;
 import java.io.Serializable;
 
 public class DailyTweetBean implements Serializable {
+    private String tweetName;
+    private String tweetTime;
+    private String tweetPicUrl;
+    private String newGameTime;
+    private String gameId;
 
     public String getTweetName() {
         return tweetName;
@@ -29,11 +34,6 @@ public class DailyTweetBean implements Serializable {
         this.tweetPicUrl = tweetPicUrl;
     }
 
-    private String tweetName;
-    private String tweetTime;
-    private String tweetPicUrl;
-    private String newGameTime;
-
 
     public String getNewGameTime() {
         return newGameTime;
@@ -43,7 +43,13 @@ public class DailyTweetBean implements Serializable {
         this.newGameTime = newGameTime;
     }
 
+    public String getGameId() {
+        return gameId;
+    }
 
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
 
 //    public DailyTweetBean(String tweetName, String tweetTime) {
 //        this.tweetName = tweetName;
