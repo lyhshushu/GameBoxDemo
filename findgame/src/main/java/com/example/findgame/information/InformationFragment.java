@@ -12,17 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.androidlib.BaseFragment;
 import com.example.findgame.R;
 import com.example.findgame.R2;
-import com.example.findgame.album.AlbumAdapter;
-import com.example.findgame.bean.AlbumBean;
 import com.example.findgame.bean.LikeGameBean;
-import com.example.findgame.information.bottomdialog.BottomDialogAdapter;
-import com.example.findgame.recommend.NewGameAdapter;
+import com.example.findgame.information.bottomdialog.BottomDialogLikeAdapter;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -35,7 +30,6 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -202,7 +196,7 @@ public class InformationFragment extends BaseFragment {
         View view = View.inflate(mContext, R.layout.dialog_bottom_like, null);
         rvDialog = view.findViewById(R.id.rv_reasons);
         rvDialog.setLayoutManager(new GridLayoutManager(mContext, 2));
-        BottomDialogAdapter bottomDialogAdapter = new BottomDialogAdapter(R.layout.item_bottom_dialog_tag);
+        BottomDialogLikeAdapter bottomDialogAdapter = new BottomDialogLikeAdapter(R.layout.item_bottom_dialog_tag);
         rvDialog.setAdapter(bottomDialogAdapter);
         bottomSheetDialog = new BottomSheetDialog(mContext,R.style.BottomDialog);
         bottomSheetDialog.setContentView(view);
@@ -218,14 +212,14 @@ public class InformationFragment extends BaseFragment {
         bottomDialogAdapter.notifyDataSetChanged();
 
         mDialogBehavior = BottomSheetBehavior.from((View) view.getParent());
-//        mDialogBehavior.setPeekHeight(getPeekHeight());
+        mDialogBehavior.setPeekHeight(getPeekHeight());
 
     }
 
-//    protected int getPeekHeight() {
-//        int peekHeight = getResources().getDisplayMetrics().heightPixels;
-//        //设置弹窗高度为屏幕高度的3/4
-//        return peekHeight - peekHeight / 2;
-//    }
+    protected int getPeekHeight() {
+        int peekHeight = getResources().getDisplayMetrics().heightPixels;
+        //设置弹窗高度为屏幕高度的3/4
+        return peekHeight - peekHeight / 2;
+    }
 
 }

@@ -64,4 +64,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     //FlycoTabLayout/SlidingTabLayout
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    //PRDownLoader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
 }

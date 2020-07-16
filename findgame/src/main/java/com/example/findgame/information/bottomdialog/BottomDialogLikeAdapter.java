@@ -8,16 +8,16 @@ import com.example.findgame.R;
 
 import java.util.List;
 
-public class BottomDialogAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
-    public BottomDialogAdapter(int layoutResId, @Nullable List<String> data) {
+public class BottomDialogLikeAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+    public BottomDialogLikeAdapter(int layoutResId, @Nullable List<String> data) {
         super(layoutResId, data);
     }
 
-    public BottomDialogAdapter(@Nullable List<String> data) {
+    public BottomDialogLikeAdapter(@Nullable List<String> data) {
         super(data);
     }
 
-    public BottomDialogAdapter(int layoutResId) {
+    public BottomDialogLikeAdapter(int layoutResId) {
         super(layoutResId);
     }
 

@@ -12,8 +12,63 @@ public class GameInfActBean implements Serializable {
     private String appTitlePic;
     private String appVideo;
     private List<String> appPicList;
-    private String appInfDetail;
 
+    //简介碎片
+    private String appInfDetail;
+    private String appWarmTip;
+    private String appCreator;
+    private String appVersion;
+    private List<String> appScreen;
+    private List<AppPermissionBean> appPermissionBeans;
+    private List<String> appTags;
+
+    public List<String> getAppTags() {
+        return appTags;
+    }
+
+    public void setAppTags(List<String> appTags) {
+        this.appTags = appTags;
+    }
+
+    public List<String> getAppScreen() {
+        return appScreen;
+    }
+
+    public void setAppScreen(List<String> appScreen) {
+        this.appScreen = appScreen;
+    }
+
+    public List<AppPermissionBean> getAppPermissionBeans() {
+        return appPermissionBeans;
+    }
+
+    public void setAppPermissionBeans(List<AppPermissionBean> appPermissionBeans) {
+        this.appPermissionBeans = appPermissionBeans;
+    }
+
+    public String getAppCreator() {
+        return appCreator;
+    }
+
+    public void setAppCreator(String appCreator) {
+        this.appCreator = appCreator;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
+
+    public String getAppWarmTip() {
+        return appWarmTip;
+    }
+
+    public void setAppWarmTip(String appWarmTip) {
+        this.appWarmTip = appWarmTip;
+    }
 
     public String getAppName() {
         return appName;

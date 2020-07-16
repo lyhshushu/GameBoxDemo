@@ -1,6 +1,11 @@
 package com.example.findgame.recommend.controller;
 
 
+import android.content.Context;
+import android.os.Handler;
+
+import com.example.findgame.bean.GameInfBean;
+
 import java.util.HashMap;
 
 
@@ -20,6 +25,8 @@ public class MvcModelImp implements MvcModel {
     public void downloadModel(String url, String path, MvcListener listener) {
         HttpUtil.getInstance().doDownload(url, path, listener);
     }
+
+
 
     @Override
     public void uploadModel(String url, String path, String fileName, String Type, MvcListener listener) {

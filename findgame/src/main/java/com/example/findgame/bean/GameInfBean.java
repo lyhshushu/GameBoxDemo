@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 
-
 /**
  * @author 4399lyh
  */
@@ -22,6 +21,15 @@ public class GameInfBean implements Serializable, MultiItemEntity {
     private String gameImgUrl;
     private String titleName;
     private String gameId;
+    private String downloadUrl;
+
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
 
     public int getType() {
         return type;
@@ -41,7 +49,6 @@ public class GameInfBean implements Serializable, MultiItemEntity {
     public void setTitleName(String titleName) {
         this.titleName = titleName;
     }
-
 
 
     public GameInfBean() {

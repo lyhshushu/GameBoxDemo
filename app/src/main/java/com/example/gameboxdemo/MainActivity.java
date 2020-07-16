@@ -2,13 +2,20 @@ package com.example.gameboxdemo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.androidlib.BaseActivity;
 import com.example.androidlib.view.IndexViewPager;
@@ -22,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * @author lyh
@@ -40,6 +49,28 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                // 检查权限状态
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    //  用户彻底拒绝授予权限，一般会提示用户进入设置权限界面
+                } else {
+                    //  用户未彻底拒绝授予权限
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                // 检查权限状态
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    //  用户彻底拒绝授予权限，一般会提示用户进入设置权限界面
+                } else {
+                    //  用户未彻底拒绝授予权限
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                }
+            }
+        }
+
+
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
 //添加fragment
         adapter.addFragment(new FindGameFragment());
@@ -66,17 +97,17 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void bindListener() {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.find_game:
-                    mViewPager.setCurrentItem(0, false);
-                    return true;
-                case R.id.dynamic:
-                    mViewPager.setCurrentItem(1, false);
-                    return true;
-                default:
-            }
-            return false;
-        }
+                    switch (item.getItemId()) {
+                        case R.id.find_game:
+                            mViewPager.setCurrentItem(0, false);
+                            return true;
+                        case R.id.dynamic:
+                            mViewPager.setCurrentItem(1, false);
+                            return true;
+                        default:
+                    }
+                    return false;
+                }
         );
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -114,6 +145,20 @@ public class MainActivity extends BaseActivity {
 
         public void addFragment(Fragment fragment) {
             fragments.add(fragment);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] == PERMISSION_GRANTED) {
+                    Toast.makeText(activity,"success",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(activity,"fail",Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }

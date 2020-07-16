@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.Outline;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -27,6 +28,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.downloader.Progress;
+import com.downloader.Status;
 import com.example.androidlib.BaseFragment;
 import com.example.androidlib.view.ImageButtonWithText;
 import com.example.findgame.R;
@@ -37,6 +48,8 @@ import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
 import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
+import com.example.findgame.recommend.controller.MvcListener;
+import com.example.findgame.recommend.controller.MvcModel;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
 
@@ -45,6 +58,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,6 +72,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okio.BufferedSink;
+import okio.Okio;
 
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
@@ -143,6 +165,8 @@ public class RecommendFragment extends BaseFragment {
 
     private List<Integer> types;
     private List<String> titles;
+    private int processNow;
+    private int downloadId;
 
     public RecommendFragment() {
     }
@@ -205,7 +229,6 @@ public class RecommendFragment extends BaseFragment {
             GameInfBean gameInfBean = (GameInfBean) mGameInfData.get(position);
             if (id == R.id.csl_game_inf) {
                 Toast.makeText(mContext, gameInfBean.getGameName() + "csl_game_inf", Toast.LENGTH_SHORT).show();
-
                 //component启动（都可实现）
 //                ComponentName componentName=new ComponentName("com.example.gameboxdemo","com.example.gameboxdemo.GameInfActivity");
 //                intent.setComponent(componentName);
@@ -213,6 +236,68 @@ public class RecommendFragment extends BaseFragment {
                 startGameInfActivity(mContext, gameInfBean.getGameId());
 
             } else if (id == R.id.bt_download) {
+                //无法大文件,进度错误0->100
+//                MvcModelImp mvcModelImp = new MvcModelImp();
+//                mvcModelImp.downloadModel(gameInfBean.getDownloadUrl(), "sdcard/" + gameInfBean.getGameName() + ".apk", new MvcListener() {
+//                    @Override
+//                    public void onError(String message) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFinish() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onProgress(int progress) {
+//                        Message msg = new Message();
+//                        msg.what = 2;
+//                        msg.arg1 = progress;
+//                        handler.sendMessage(msg);
+//                    }
+//                });
+                //无获取进度
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        download("http://sj.img4399.com/aes/ff8bbb8e008b7a461b5c3792f8e08d970d06de536894d9315ca8dd71d113fbc9f83e2cde600cc9b6f15970076468d7ab4174d89a34845102ef3a69783dcd2a8354ce53e216c764cf9dc9380dd03585b5", "./");
+//                    }
+//                }).start();
+
+//                使用PRDownloader,封装尝试并不理想
+                if (PRDownloader.getStatus(downloadId) == Status.PAUSED) {
+                    PRDownloader.resume(downloadId);
+                } else {
+                    PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                            .setDatabaseEnabled(true)
+                            .build();
+                    PRDownloader.initialize(mContext, config);
+                    downloadId = PRDownloader.download(gameInfBean.getDownloadUrl(), "sdcard/", gameInfBean.getGameName() + ".apk")
+                            .build()
+                            .setOnProgressListener(new OnProgressListener() {
+                                @Override
+                                public void onProgress(Progress progress) {
+                                    Message msg = new Message();
+                                    msg.what = 2;
+                                    long currentBytes = progress.currentBytes;
+                                    long totalBytes = progress.totalBytes;
+                                    msg.arg1 = (int) ((currentBytes * 100) / totalBytes);
+                                    handler.sendMessage(msg);
+                                }
+                            })
+                            .start(new OnDownloadListener() {
+                                @Override
+                                public void onDownloadComplete() {
+
+                                }
+
+                                @Override
+                                public void onError(Error error) {
+
+                                }
+                            });
+                }
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.tweet) {
                 Toast.makeText(mContext, "特推", Toast.LENGTH_SHORT).show();
@@ -223,7 +308,9 @@ public class RecommendFragment extends BaseFragment {
             }
         });
 
-        mAdInfAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+        mAdInfAdapter.setOnItemChildClickListener((adapter, view, position) ->
+
+        {
             int id = view.getId();
             if (id == R.id.csl_ad_game) {
                 Toast.makeText(mContext, mAdInfData.get(position).getAdName() + position, Toast.LENGTH_SHORT).show();
@@ -259,6 +346,7 @@ public class RecommendFragment extends BaseFragment {
             Toast.makeText(mContext, "update_apk_delete", Toast.LENGTH_SHORT).show();
             updateApk.setVisibility(View.GONE);
         } else if (id == R.id.update_apk_button) {
+            PRDownloader.pause(downloadId);
             Toast.makeText(mContext, "update_apk_button", Toast.LENGTH_SHORT).show();
         }
     }
@@ -287,6 +375,7 @@ public class RecommendFragment extends BaseFragment {
         hotBeans = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
         handler = new Handler() {
+            @SuppressLint("SetTextI18n")
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void handleMessage(Message msg) {
@@ -316,6 +405,9 @@ public class RecommendFragment extends BaseFragment {
                     Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
                     Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
                 }
+                if (msg.what == 2) {
+                    updateApkName.setText(msg.arg1 + "%");
+                }
             }
         };
         mAdInfAdapter.setNewData(mAdInfData);
@@ -336,8 +428,6 @@ public class RecommendFragment extends BaseFragment {
                 for (int i = 0; i < adListLength; i++) {
                     getListInf(i, json);
                 }
-
-
                 handler.sendEmptyMessage(1);
             }
 
@@ -631,6 +721,7 @@ public class RecommendFragment extends BaseFragment {
                 gameInfBean.setGameInf(jsonObject.getString("review"));
                 gameInfBean.setGameImgUrl(jsonObject.getString("icopath"));
                 gameInfBean.setGameId(jsonObject.getString("id"));
+                gameInfBean.setDownloadUrl(jsonObject.getString("downurl"));
                 gameInfBean.setType(0);
                 mGameInfData.add(gameInfBean);
             }
@@ -663,5 +754,30 @@ public class RecommendFragment extends BaseFragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("gameId", gameId);
         context.getApplicationContext().startActivity(intent);
+    }
+
+
+    //下载测试download
+    private static String download(String url, String savePath) {
+        String result = null;
+        try {
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Request request = new Request.Builder().url(url).build();
+            Response response = okHttpClient.newCall(request).execute();
+            File file = new File("sdcard/cache.apk");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+//                file.getParentFile().createNewFile();
+            }
+            BufferedSink sink = Okio.buffer((Okio.sink(file)));
+            sink.writeAll(response.body().source());
+            sink.flush();
+            sink.close();
+            result = savePath;
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
     }
 }

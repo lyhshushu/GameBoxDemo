@@ -22,22 +22,26 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.androidlib.BaseActivity;
-import com.example.androidlib.view.OnMeasureViewPager;
 import com.example.androidlib.view.VerticalScrollView;
 import com.example.androidlib.view.VideoPlayerIJK;
 import com.example.androidlib.view.bean.PlayerVideoBean;
 import com.example.findgame.FindGameFragment;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
+import com.example.gameboxdemo.bean.AppPermissionBean;
 import com.example.gameboxdemo.bean.GameInfActBean;
 import com.example.gameboxdemo.fragment.GameInfIntroduceFragemt;
 import com.flyco.tablayout.SlidingTabLayout;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +82,7 @@ public class GameInfActivity extends BaseActivity {
 
     private String gameId;
     private Handler handler;
-    public static GameInfActBean gameInfBean;
+    public GameInfActBean gameInfBean;
     private List<PlayerVideoBean> playerVideoBeans;
     private List<String> titles;
 
@@ -91,7 +95,6 @@ public class GameInfActivity extends BaseActivity {
     @Override
     public void initView() {
         videoPlayer.setVisibility(View.INVISIBLE);
-        gameInfBean = new GameInfActBean();
         try {
             //错误当前
             IjkMediaPlayer.loadLibrariesOnce(null);
@@ -109,7 +112,7 @@ public class GameInfActivity extends BaseActivity {
         titles.add("评论");
         titles.add("攻略");
         titles.add("游戏圈");
-
+        gameInfBean = new GameInfActBean();
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new GameInfIntroduceFragemt());
@@ -150,7 +153,6 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
         Intent intent = getIntent();
         gameId = intent.getStringExtra("gameId");
         getJson(BASEURL + "/app/android/v4.4.9/gameDetail-index-id-" + gameId + ".html");
@@ -160,6 +162,7 @@ public class GameInfActivity extends BaseActivity {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
+                    EventBus.getDefault().post(gameInfBean);
                     VideoPlayerIJK.setPlayerVideoBeans(playerVideoBeans);
                     Glide.with(activity).load(gameInfBean.getAppIcon()).into(ivGameIcon);
                     Glide.with(activity).load(gameInfBean.getAppTitlePic()).into(ivGameMainView);
@@ -193,9 +196,6 @@ public class GameInfActivity extends BaseActivity {
             JSONObject allJson = new JSONObject(json);
             String result = allJson.getString("result");
             JSONObject resultJson = new JSONObject(result);
-            gameInfBean.setAppIcon(resultJson.getString("icopath"));
-            gameInfBean.setAppName(resultJson.getString("appname"));
-
             float size = Float.parseFloat(resultJson.getString("size"));
             int intSize;
             String gameSize = null;
@@ -216,8 +216,6 @@ public class GameInfActivity extends BaseActivity {
                     gameSize = size + "M";
                 }
             }
-
-            gameInfBean.setAppSize(gameSize);
             String newGameInf = null;
             int downNum = Integer.parseInt(resultJson.getString("downnum"));
             if (downNum > OVER_10000) {
@@ -226,17 +224,10 @@ public class GameInfActivity extends BaseActivity {
             } else {
                 newGameInf = downNum + getString(com.example.findgame.R.string.times) + getString(com.example.findgame.R.string.download) + "  " + gameSize;
             }
-            gameInfBean.setAppDownload(newGameInf);
-
             String videos = resultJson.getString("videos");
             JSONArray videosJson = new JSONArray(videos);
             JSONObject videoJson = videosJson.getJSONObject(0);
-            gameInfBean.setAppTitlePic(videoJson.getString("img"));
-            gameInfBean.setAppVideo(videoJson.getString("url"));
-            gameInfBean.setAppInfDetail(resultJson.getString("appinfo"));
-
             List<String> picList = new LinkedList<>();
-
             String customVideo = resultJson.getString("custom_video");
             JSONObject customVideoJson = new JSONObject(customVideo);
             String videoList = customVideoJson.getString("list");
@@ -249,6 +240,52 @@ public class GameInfActivity extends BaseActivity {
                 playerVideoBean.setPlayerVideo(jsonVideo.getString("video_url"));
                 playerVideoBeans.add(playerVideoBean);
             }
+            String dev = resultJson.getString("dev");
+            JSONObject devJson = new JSONObject(dev);
+
+            String dateLine = resultJson.getString("dateline");
+            long date = Long.parseLong(dateLine) * 1000;
+            Timestamp timestamp = new Timestamp(date);
+            @SuppressLint("SimpleDateFormat")
+            DateFormat dateFormat = new SimpleDateFormat(getString(com.example.findgame.R.string.date_with_line));
+            String dateString = dateFormat.format(timestamp);
+
+            String permission = resultJson.getString("apk_permission");
+            List<AppPermissionBean> permissionBeans = new LinkedList<>();
+            JSONArray permissionList = new JSONArray(permission);
+            for (int i = 0; i < permissionList.length(); i++) {
+                AppPermissionBean permissionBean = new AppPermissionBean();
+                JSONObject permissionJson = permissionList.getJSONObject(i);
+                permissionBean.setPermissionDes(permissionJson.getString("desc"));
+                permissionBean.setPermissionTitle(permissionJson.getString("title"));
+                permissionBeans.add(permissionBean);
+            }
+            String screenPath = resultJson.getString("screenpath");
+            JSONArray screenPathJson = new JSONArray(screenPath);
+            List<String> screenList = new LinkedList<>();
+            for (int i = 0; i < screenPathJson.length(); i++) {
+                screenList.add((String) screenPathJson.get(i));
+            }
+            String tags = resultJson.getString("tags");
+            List<String> tagList = new LinkedList<>();
+            JSONArray tagsJson = new JSONArray(tags);
+            for (int i = 0; i < tagsJson.length(); i++) {
+                JSONObject tagJson = tagsJson.getJSONObject(i);
+                tagList.add(tagJson.getString("name"));
+            }
+            gameInfBean.setAppTags(tagList);
+            gameInfBean.setAppScreen(screenList);
+            gameInfBean.setAppPermissionBeans(permissionBeans);
+            gameInfBean.setAppVersion(resultJson.getString("version") + " | " + dateString + "更新");
+            gameInfBean.setAppCreator(devJson.getString("name"));
+            gameInfBean.setAppSize(gameSize);
+            gameInfBean.setAppDownload(newGameInf);
+            gameInfBean.setAppIcon(resultJson.getString("icopath"));
+            gameInfBean.setAppName(resultJson.getString("appname"));
+            gameInfBean.setAppTitlePic(videoJson.getString("img"));
+            gameInfBean.setAppVideo(videoJson.getString("url"));
+            gameInfBean.setAppInfDetail(resultJson.getString("appinfo"));
+            gameInfBean.setAppWarmTip(resultJson.getString("note"));
             gameInfBean.setAppPicList(picList);
         } catch (JSONException e) {
             e.printStackTrace();

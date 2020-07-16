@@ -1,5 +1,10 @@
 package com.example.findgame.recommend.controller;
 
+import android.content.Context;
+import android.os.Handler;
+
+import com.example.findgame.bean.GameInfBean;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +38,6 @@ public interface MvcModel {
      * @param listener
      */
     void downloadModel(String url, String path, MvcListener listener);
-
 
     /**
      * upload
