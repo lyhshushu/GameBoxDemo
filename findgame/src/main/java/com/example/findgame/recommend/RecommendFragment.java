@@ -165,7 +165,6 @@ public class RecommendFragment extends BaseFragment {
 
     private List<Integer> types;
     private List<String> titles;
-    private int processNow;
     private int downloadId;
 
     public RecommendFragment() {
@@ -257,15 +256,15 @@ public class RecommendFragment extends BaseFragment {
 //                        handler.sendMessage(msg);
 //                    }
 //                });
-                //无获取进度
+                //无获取进度，
 //                new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        download("http://sj.img4399.com/aes/ff8bbb8e008b7a461b5c3792f8e08d970d06de536894d9315ca8dd71d113fbc9f83e2cde600cc9b6f15970076468d7ab4174d89a34845102ef3a69783dcd2a8354ce53e216c764cf9dc9380dd03585b5", "./");
+//                        download();
 //                    }
 //                }).start();
 
-//                使用PRDownloader,封装尝试并不理想
+//                使用PRDownloader, 封装尝试并不理想，返回id不规范，支持多线程
                 if (PRDownloader.getStatus(downloadId) == Status.PAUSED) {
                     PRDownloader.resume(downloadId);
                 } else {
@@ -273,7 +272,7 @@ public class RecommendFragment extends BaseFragment {
                             .setDatabaseEnabled(true)
                             .build();
                     PRDownloader.initialize(mContext, config);
-                    downloadId = PRDownloader.download(gameInfBean.getDownloadUrl(), "sdcard/", gameInfBean.getGameName() + ".apk")
+                    downloadId = PRDownloader.download(gameInfBean.getDownloadUrl(), "sdcard/android/data/com.example.gameboxdemo", gameInfBean.getGameName() + ".apk")
                             .build()
                             .setOnProgressListener(new OnProgressListener() {
                                 @Override
@@ -406,7 +405,9 @@ public class RecommendFragment extends BaseFragment {
                     Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
                 }
                 if (msg.what == 2) {
-                    updateApkName.setText(msg.arg1 + "%");
+                    if (updateApkName != null) {
+                        updateApkName.setText(msg.arg1 + "%");
+                    }
                 }
             }
         };
@@ -436,6 +437,11 @@ public class RecommendFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     private void getListInf(int i, String json) {

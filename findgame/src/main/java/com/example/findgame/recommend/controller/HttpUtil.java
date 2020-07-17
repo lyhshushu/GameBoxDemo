@@ -23,6 +23,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +43,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.internal.connection.RealConnection;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okio.Buffer;
 import okio.BufferedSink;
@@ -147,6 +152,7 @@ public class HttpUtil {
                 .url(url)
                 .get()
                 .build();
+
         Call call = okHttpClient.newCall(builder);
         call.enqueue(new Callback() {
             @Override
