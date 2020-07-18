@@ -152,8 +152,8 @@ public class GameInfIntroduceFragemt extends BaseFragment {
     }
 
     private void createDialog() {
-        View view = View.inflate(mContext, R.layout.dialog_bottom_permission, null);
-        TextView textView = view.findViewById(R.id.tv_title_permission);
+        View view = View.inflate(mContext, R.layout.dialog_bottom_like, null);
+        TextView textView = view.findViewById(R.id.not_like_reason);
         textView.setText("该应用需要访问以下权限");
         textView.setTextColor(getResources().getColor(R.color.black));
         textView.setTextSize(15);
@@ -168,29 +168,17 @@ public class GameInfIntroduceFragemt extends BaseFragment {
 
         bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomDialog);
         bottomSheetDialog.setContentView(view);
+
         dialogBehavior = BottomSheetBehavior.from((View) view.getParent());
         dialogBehavior.setPeekHeight(getPeekHeight());
-        dialogBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    bottomSheetDialog.dismiss();
-                    dialogBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
     }
+
     protected int getPeekHeight() {
         int peekHeight = getResources().getDisplayMetrics().heightPixels;
         //设置弹窗高度为屏幕高度的3/4
-        return peekHeight - peekHeight / 3;
+        return peekHeight - peekHeight / 2;
     }
-
 
     public static class GameInfTagAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         public GameInfTagAdapter(int layoutResId, @Nullable List<String> data) {
