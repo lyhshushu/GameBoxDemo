@@ -96,18 +96,12 @@ public class GameInfActivity extends BaseActivity {
     @BindView(R.id.tv_title_game_name)
     TextView tvTitleGameName;
 
-
     private String gameId;
     private Handler handler;
     public GameInfActBean gameInfBean;
     private List<PlayerVideoBean> playerVideoBeans;
     private List<String> titles;
 
-
-//    @Override
-//    public int getLayoutId() {
-//        return R.layout.activity_game_inf;
-//    }
 
     @Override
     public void initView() {

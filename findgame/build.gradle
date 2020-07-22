@@ -46,34 +46,33 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
 
     //gson
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation rootProject.ext.allLib.gson
 
-    //XTabLayout
-    implementation 'com.androidkun:XTabLayout:1.1.3'
     //butter knife
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation rootProject.ext.allLib.butterKnife
+    annotationProcessor rootProject.ext.allLib.butterKnifeCompiler
     //google material
-    implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation rootProject.ext.allLib.googleMaterial
+    implementation rootProject.ext.allLib.vectordrawable
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation rootProject.ext.allLib.glide
+    annotationProcessor rootProject.ext.allLib.glideCompiler
     //RecyclerView
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45'
+    implementation rootProject.ext.allLib.BRVAH
+    implementation rootProject.ext.allLib.recyclerView
     //banner
-    implementation 'com.youth.banner:banner:1.4.10'
+    implementation rootProject.ext.allLib.banner
     //数据库
-    implementation 'org.litepal.android:java:3.0.0'
+    implementation rootProject.ext.allLib.datebase
     //EventBus
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation rootProject.ext.allLib.eventBus
     //权限
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation rootProject.ext.allLib.permission
     implementation project(path: ':androidlib')
     //沉浸式状态栏
-    implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
+    implementation rootProject.ext.allLib.barlibrary
     //FlycoTabLayout/SlidingTabLayout
-    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    implementation rootProject.ext.allLib.slidingTopLayout
     //PRDownLoader
-    implementation 'com.mindorks.android:prdownloader:0.6.0'
+    implementation rootProject.ext.allLib.downloader
 }

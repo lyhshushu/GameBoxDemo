@@ -8,18 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.androidkun.xtablayout.XTabLayout;
 import com.example.androidlib.BaseFragment;
 import com.example.findgame.album.AlbumFragment;
 import com.example.findgame.classification.ClassificationFragment;
 import com.example.findgame.information.InformationFragment;
 import com.example.findgame.rank.RankFragment;
 import com.example.findgame.recommend.RecommendFragment;
-import com.example.findgame.recommend.controller.MvcListener;
 import com.flyco.tablayout.SlidingTabLayout;
 
 import java.util.ArrayList;

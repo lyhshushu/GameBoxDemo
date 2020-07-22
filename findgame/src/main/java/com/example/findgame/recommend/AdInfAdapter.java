@@ -1,10 +1,7 @@
 package com.example.findgame.recommend;
 
 
-import android.graphics.Outline;
 import android.os.Build;
-import android.view.View;
-import android.view.ViewOutlineProvider;
 
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
