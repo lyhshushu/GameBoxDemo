@@ -1,5 +1,6 @@
 package com.example.gameboxdemo;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,6 +15,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.example.androidlib.BaseActivity;
 import com.example.androidlib.view.IndexViewPager;
 import com.example.findgame.FindGameFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.testinject.injectutil.InjectView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -35,17 +38,14 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 /**
  * @author lyh
  */
+@InjectView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
-
+    private static final long BACK_SECOND = 3000;
     @BindView(R.id.viewpager)
     IndexViewPager mViewPager;
     @BindView(R.id.nav_view)
     BottomNavigationView bottomNavigationView;
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.activity_main;
-    }
+    private long firstClick;
 
     @Override
     public void initView() {
@@ -154,11 +154,29 @@ public class MainActivity extends BaseActivity {
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PERMISSION_GRANTED) {
-                    Toast.makeText(activity,"success",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "success", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(activity,"fail",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "fail", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onAppExit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void onAppExit() {
+        if (System.currentTimeMillis() - this.firstClick > BACK_SECOND) {
+            this.firstClick = System.currentTimeMillis();
+            Toast.makeText(activity, "再按一次确认退出至后台", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        moveTaskToBack(false);
     }
 }

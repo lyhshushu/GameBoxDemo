@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -67,4 +67,7 @@ dependencies {
     //google material
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    //activityKnife(自定义尝试)
+    //activityKnife(自定义尝试)
+    implementation 'com.github.lyhshushu:InjectView:v1.1'
 }

@@ -1,14 +1,12 @@
 package com.example.findgame.recommend;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.Outline;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -22,23 +20,20 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.KeyEventDispatcher;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.downloader.Error;
-import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
-import com.downloader.OnPauseListener;
 import com.downloader.OnProgressListener;
-import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Progress;
 import com.downloader.Status;
 import com.example.androidlib.BaseFragment;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.androidlib.view.ImageButtonWithText;
 import com.example.findgame.R;
 import com.example.findgame.R2;
@@ -48,8 +43,6 @@ import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
 import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
-import com.example.findgame.recommend.controller.MvcListener;
-import com.example.findgame.recommend.controller.MvcModel;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
 
@@ -59,9 +52,6 @@ import org.json.JSONObject;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -374,8 +364,8 @@ public class RecommendFragment extends BaseFragment {
         hotBeans = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
         handler = new Handler() {
-            @SuppressLint("SetTextI18n")
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @SuppressLint("SetTextI18n")
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -387,22 +377,10 @@ public class RecommendFragment extends BaseFragment {
                         mGameInfData.add(4 * (i + 1), gameInfBean);
                         mGameInfAdapter.setNewData(mGameInfData);
                     }
-                    picOne.setOutlineProvider(new ViewOutlineProvider() {
-                        @Override
-                        public void getOutline(View view, Outline outline) {
-                            outline.setRoundRect(0, 0, picOne.getWidth(), picOne.getHeight(), 30);
-                        }
-                    });
-                    picTwo.setOutlineProvider(new ViewOutlineProvider() {
-                        @Override
-                        public void getOutline(View view, Outline outline) {
-                            outline.setRoundRect(0, 0, picTwo.getWidth(), picTwo.getHeight(), 30);
-                        }
-                    });
-                    picOne.setClipToOutline(true);
-                    picTwo.setClipToOutline(true);
                     Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
                     Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
+                    OutLineSetter.setOutLine(picOne,30);
+                    OutLineSetter.setOutLine(picTwo,30);
                 }
                 if (msg.what == 2) {
                     if (updateApkName != null) {

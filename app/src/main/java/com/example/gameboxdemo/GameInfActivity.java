@@ -2,13 +2,15 @@ package com.example.gameboxdemo;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.androidlib.BaseActivity;
+import com.example.androidlib.view.InterToolbar;
 import com.example.androidlib.view.VerticalScrollView;
 import com.example.androidlib.view.VideoPlayerIJK;
 import com.example.androidlib.view.bean.PlayerVideoBean;
@@ -32,6 +35,9 @@ import com.example.gameboxdemo.bean.AppPermissionBean;
 import com.example.gameboxdemo.bean.GameInfActBean;
 import com.example.gameboxdemo.fragment.GameInfIntroduceFragemt;
 import com.flyco.tablayout.SlidingTabLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.testinject.injectutil.InjectView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -45,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +59,9 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
+@InjectView(R.layout.activity_game_inf)
 public class GameInfActivity extends BaseActivity {
+    private static final int MAX_ALPHA = 255;
 
     private final static int OVER_10000 = 10000;
 
@@ -78,6 +87,14 @@ public class GameInfActivity extends BaseActivity {
     ViewPager vpGameInf;
     @BindView(R.id.vs_game_inf)
     VerticalScrollView vsGameInf;
+    @BindView(R.id.tb_title)
+    InterToolbar tbTitle;
+    @BindView(R.id.ctb_info_title)
+    CollapsingToolbarLayout ctbInfoTitle;
+    @BindView(R.id.abl_layout)
+    AppBarLayout ablLayout;
+    @BindView(R.id.tv_title_game_name)
+    TextView tvTitleGameName;
 
 
     private String gameId;
@@ -87,16 +104,15 @@ public class GameInfActivity extends BaseActivity {
     private List<String> titles;
 
 
-    @Override
-    public int getLayoutId() {
-        return R.layout.activity_game_inf;
-    }
+//    @Override
+//    public int getLayoutId() {
+//        return R.layout.activity_game_inf;
+//    }
 
     @Override
     public void initView() {
         videoPlayer.setVisibility(View.INVISIBLE);
         try {
-            //错误当前
             IjkMediaPlayer.loadLibrariesOnce(null);
             IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         } catch (Exception e) {
@@ -125,6 +141,32 @@ public class GameInfActivity extends BaseActivity {
         vpGameInf.setAdapter(gameInfFragmentAdapter);
         stlGameInf.setViewPager(vpGameInf, titles.toArray(new String[0]));
         vsGameInf.setNeedScroll(true);
+        setSupportActionBar(tbTitle);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        tbTitle.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        tbTitle.getBackground().mutate().setAlpha(0);
+        ablLayout.addOnOffsetChangedListener(new AppBarLayout.BaseOnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    tbTitle.getBackground().mutate().setAlpha(0);
+                    tvTitleGameName.setText("");
+                } else if (Math.abs(verticalOffset) >= MAX_ALPHA) {
+                    tvTitleGameName.setText(gameInfBean.getAppName());
+                    tbTitle.getBackground().mutate().setAlpha(MAX_ALPHA);
+                } else {
+                    tbTitle.getBackground().mutate().setAlpha(Math.abs(verticalOffset));
+                    tvTitleGameName.setText("");
+                }
+            }
+        });
+
     }
 
     @Override
@@ -166,6 +208,7 @@ public class GameInfActivity extends BaseActivity {
                     VideoPlayerIJK.setPlayerVideoBeans(playerVideoBeans);
                     Glide.with(activity).load(gameInfBean.getAppIcon()).into(ivGameIcon);
                     Glide.with(activity).load(gameInfBean.getAppTitlePic()).into(ivGameMainView);
+
                     tvGameName.setText(gameInfBean.getAppName());
                     tvGameDownload.setText(gameInfBean.getAppDownload());
                     tvGameSize.setText(gameInfBean.getAppSize());
@@ -240,7 +283,7 @@ public class GameInfActivity extends BaseActivity {
                 playerVideoBean.setPlayerVideo(jsonVideo.getString("video_url"));
                 playerVideoBeans.add(playerVideoBean);
             }
-            String dev = resultJson.getString("dev");
+            String dev = resultJson.getString("dev_info");
             JSONObject devJson = new JSONObject(dev);
 
             String dateLine = resultJson.getString("dateline");
@@ -323,4 +366,30 @@ public class GameInfActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
+
+    /**
+     * 获取屏幕的宽
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
+    }
+
+    /**
+     * 获取屏幕的高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
+    }
 }

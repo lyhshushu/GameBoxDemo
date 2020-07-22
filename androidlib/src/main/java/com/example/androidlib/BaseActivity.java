@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.testinject.injectutil.InjectManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -31,7 +32,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(getLayoutId());
+//        setContentView(getLayoutId());
+        InjectManager.inject(this);
         bun = ButterKnife.bind(this);
         activity = this;
 
@@ -83,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      *
      * @return int
      */
-    public abstract int getLayoutId();
+//    public abstract int getLayoutId();
 
     /**
      * 设置View

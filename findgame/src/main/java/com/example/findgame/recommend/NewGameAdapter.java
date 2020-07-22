@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.findgame.R;
 import com.example.findgame.bean.DailyTweetBean;
 
@@ -35,15 +36,7 @@ public class NewGameAdapter extends BaseQuickAdapter<DailyTweetBean, BaseViewHol
     protected void convert(BaseViewHolder helper, DailyTweetBean item) {
 
         ImageView pic = helper.getView(R.id.new_game_icon);
-
-        pic.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, pic.getWidth(), pic.getHeight(), 30);
-            }
-        });
-        pic.setClipToOutline(true);
-
+        OutLineSetter.setOutLine(pic, 30);
 
         Glide.with(mContext).load(item.getTweetPicUrl()).into(pic);
         helper.setText(R.id.new_game_name, item.getTweetName())

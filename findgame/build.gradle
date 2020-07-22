@@ -5,7 +5,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -66,7 +66,7 @@ dependencies {
     //数据库
     implementation 'org.litepal.android:java:3.0.0'
     //EventBus
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.2.0'
     //权限
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation project(path: ':androidlib')

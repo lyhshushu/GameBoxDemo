@@ -1,15 +1,18 @@
 package com.example.gameboxdemo.fragment;
 
 import android.graphics.Outline;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.gameboxdemo.R;
 
 import java.util.List;
@@ -29,16 +32,11 @@ public class GameInfPicAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
         super(layoutResId);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void convert(BaseViewHolder helper, String item) {
         ImageView imageView = helper.getView(R.id.iv_pic_list);
-        imageView.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, imageView.getWidth(), imageView.getHeight(), 30);
-            }
-        });
-        imageView.setClipToOutline(true);
+        OutLineSetter.setOutLine(imageView, 30);
         Glide.with(mContext).load(item).into(imageView);
     }
 }

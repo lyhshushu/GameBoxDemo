@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.findgame.R;
 import com.example.findgame.bean.AdvertisementBean;
 
@@ -26,20 +27,13 @@ public class AdInfAdapter extends BaseQuickAdapter<AdvertisementBean, BaseViewHo
         super(layoutResId, data);
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void convert(BaseViewHolder helper, AdvertisementBean item) {
 
         ConstraintLayout constraintLayout = helper.getView(R.id.csl_ad_game);
-
-        constraintLayout.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, constraintLayout.getWidth(), constraintLayout.getHeight(), 30);
-            }
-        });
-        constraintLayout.setClipToOutline(true);
-
+        OutLineSetter.setOutLine(constraintLayout, 30);
 
         helper.setText(R.id.ad_name, item.getAdName())
                 .setText(R.id.ad_detail, item.getAdDetail())

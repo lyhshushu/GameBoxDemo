@@ -3,6 +3,7 @@ package com.example.androidlib.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -50,6 +51,7 @@ public class VideoPlayerIJK extends FrameLayout {
     private ImageView imageView;
     private TextView allTime;
     private TextView currentTime;
+
     private SeekBar seekBar;
     private RecyclerView rvGameVideos;
     private static List<PlayerVideoBean> playerVideoBeans;
@@ -141,10 +143,11 @@ public class VideoPlayerIJK extends FrameLayout {
         LayoutParams layoutParamsSeekBar = new LayoutParams(800, LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         seekBar.setLayoutParams(layoutParamsSeekBar);
         this.addView(seekBar);
-
+        //recyclerView
         rvGameVideos = new RecyclerView(mContext);
         LayoutParams layoutParamsRecyclerView = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.START);
         layoutParamsRecyclerView.topMargin = 20;
+        layoutParamsRecyclerView.leftMargin = 150;
         rvGameVideos.setLayoutParams(layoutParamsRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(RecyclerView.HORIZONTAL);
@@ -162,7 +165,6 @@ public class VideoPlayerIJK extends FrameLayout {
                 }
             }
         });
-
         rvGameVideos.setAdapter(videoPlayerAdapter);
         videoPlayerAdapter.setNewData(playerVideoBeans);
         videoPlayerAdapter.notifyDataSetChanged();
@@ -205,7 +207,6 @@ public class VideoPlayerIJK extends FrameLayout {
         surfaceView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "jjjj", Toast.LENGTH_SHORT).show();
                 if (imageView.getVisibility() == INVISIBLE) {
                     setVisible();
                     if (mMediaPlayer.isPlaying()) {
@@ -221,6 +222,12 @@ public class VideoPlayerIJK extends FrameLayout {
         surfaceView.setFocusable(true);
         surfaceView.setFocusableInTouchMode(false);
         surfaceView.requestFocus();
+        currentTime.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
@@ -440,5 +447,4 @@ public class VideoPlayerIJK extends FrameLayout {
             } while (true);
         }
     }
-
 }

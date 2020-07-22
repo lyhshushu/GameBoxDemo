@@ -13,7 +13,6 @@ import android.util.TypedValue;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 @SuppressLint("AppCompatCustomView")
 public class AutoResizeTextView extends TextView {

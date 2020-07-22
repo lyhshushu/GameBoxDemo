@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.findgame.R;
 import com.example.findgame.bean.AlbumBean;
 
@@ -35,13 +36,7 @@ public class AlbumAdapter extends BaseQuickAdapter<AlbumBean, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, AlbumBean item) {
 
         ImageView imageView = helper.getView(R.id.iv_collection_pic);
-        imageView.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, imageView.getWidth(), imageView.getHeight(), 30);
-            }
-        });
-        imageView.setClipToOutline(true);
+        OutLineSetter.setOutLine(imageView,30);
 
         Glide.with(mContext).load(item.getPicUrl()).into(imageView);
         helper.setText(R.id.tv_collection_name, item.getName())

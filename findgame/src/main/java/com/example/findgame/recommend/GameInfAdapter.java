@@ -19,6 +19,7 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.example.androidlib.utils.OutLineSetter;
 import com.example.androidlib.view.MyHorizontalRecyclerView;
 import com.example.findgame.R;
 import com.example.findgame.bean.DailyTweetBean;
@@ -123,7 +124,7 @@ public class GameInfAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, B
                 dailyTweetAdapter.setOnItemChildClickListener((adapter, view, position) -> {
                     int id = view.getId();
                     if (id == R.id.icon_tweet_game) {
-                        RecommendFragment.startGameInfActivity(mContext,RecommendFragment.dailyTweetBeans.get(position).getGameId());
+                        RecommendFragment.startGameInfActivity(mContext, RecommendFragment.dailyTweetBeans.get(position).getGameId());
                         Toast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -288,13 +289,7 @@ public class GameInfAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, B
                 flagList.set(9, flagList.get(9) + 1);
 
                 ConstraintLayout constraintLayout = helper.getView(R.id.csl_ad_game);
-                constraintLayout.setOutlineProvider(new ViewOutlineProvider() {
-                    @Override
-                    public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(0, 0, constraintLayout.getWidth(), constraintLayout.getHeight(), 30);
-                    }
-                });
-                constraintLayout.setClipToOutline(true);
+                OutLineSetter.setOutLine(constraintLayout, 30);
                 helper.setText(R.id.ad_name, bigTitleGame.getTitleName())
                         .setText(R.id.ad_detail, bigTitle.getGameInf())
                         .addOnClickListener(R.id.csl_ad_game);
