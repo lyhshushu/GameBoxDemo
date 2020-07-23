@@ -21,6 +21,7 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
     private static final long FAST_CLICK_DURATION = 500L;
     private long lastClickTime;
+    public static final String FINISH_VIDEO_ACTION = "receiver_action_finish";
 
     protected BaseActivity activity;
     private Unbinder bun;
@@ -36,18 +37,24 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         InjectManager.inject(this);
         bun = ButterKnife.bind(this);
         activity = this;
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        getWindow().setAttributes(lp);
+        // 设置页面全屏显示
+        final View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        ImmersionBar.with(activity)
-                .fitsSystemWindows(true)
-                .statusBarColor(R.color.white)
-                .statusBarDarkFont(true)
-                .keyboardEnable(true)
-                .init();
-
-
+        if (isHaveBar()) {
+            setToolBar();
+        }
         initView();
         bindListener();
         initData();
+    }
+
+
+    protected boolean isHaveBar() {
+        return true;
     }
 
 
@@ -64,6 +71,16 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         return 0L < timeDuration && timeDuration < FAST_CLICK_DURATION;
     }
 
+
+    private void setToolBar() {
+        ImmersionBar.with(activity)
+                .fitsSystemWindows(true)
+                .statusBarColor(R.color.white)
+                .statusBarDarkFont(true)
+                .keyboardEnable(true)
+                .init();
+    }
+
     /**
      * 点击时间
      *
@@ -72,6 +89,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected void widgetClick(View v) {
 
     }
+
 
     @Override
     public void onClick(View v) {

@@ -10,12 +10,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.FitWindowsLinearLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -77,8 +80,8 @@ public class GameInfActivity extends BaseActivity {
     ImageView ivBtDownload;
     @BindView(R.id.tv_game_size)
     TextView tvGameSize;
-    @BindView(R.id.video_player)
-    VideoPlayerIJK videoPlayer;
+    //    @BindView(R.id.video_player)
+//    VideoPlayerIJK videoPlayer;
     @BindView(R.id.cl_game_inf)
     ConstraintLayout clGameInf;
     @BindView(R.id.stl_game_inf)
@@ -95,6 +98,8 @@ public class GameInfActivity extends BaseActivity {
     AppBarLayout ablLayout;
     @BindView(R.id.tv_title_game_name)
     TextView tvTitleGameName;
+    @BindView(R.id.cl_game_video)
+    ConstraintLayout clGameVideo;
 
     private String gameId;
     private Handler handler;
@@ -105,7 +110,8 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        videoPlayer.setVisibility(View.INVISIBLE);
+//        addVideoView();
+        VideoPlayerIJK.getInstance(getApplicationContext()).setVisibility(View.INVISIBLE);
         try {
             IjkMediaPlayer.loadLibrariesOnce(null);
             IjkMediaPlayer.native_profileBegin("libijkplayer.so");
@@ -163,16 +169,35 @@ public class GameInfActivity extends BaseActivity {
 
     }
 
+    private void addVideoView() {
+        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams
+                (ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        clGameVideo.addView(VideoPlayerIJK.getInstance(getApplicationContext()), params);
+    }
+
     @Override
     protected void bindListener() {
         ivBtDownload.setOnClickListener(this);
-        videoPlayer.setOnClickListener(this);
+        VideoPlayerIJK.getInstance(getApplicationContext()).setOnClickListener(this);
         ivGameMainView.setOnClickListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        addVideoView();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        VideoPlayerIJK.getInstance().setLastPosition(VideoPlayerIJK.getInstance().getCurrentPosition());
+        clGameVideo.removeView(VideoPlayerIJK.getInstance());
+        super.onPause();
+    }
 
     public void loadVideo(String path) {
-        videoPlayer.setVideoPath(path);
+//        videoPlayer.setVideoPath(path);
+        VideoPlayerIJK.getInstance(getApplicationContext()).setVideoPath(path);
     }
 
     @Override
@@ -183,7 +208,8 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        videoPlayer.release();
+//        videoPlayer.release();
+        VideoPlayerIJK.getInstance(getApplicationContext()).release();
         super.onDestroy();
     }
 
@@ -333,18 +359,18 @@ public class GameInfActivity extends BaseActivity {
     protected void widgetClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.video_player:
-                Toast.makeText(activity, "adsadad", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.iv_Game_main_view:
-                videoPlayer.setVisibility(View.VISIBLE);
-                if (videoPlayer.getCurrentPosition() == 0) {
+                VideoPlayerIJK.getInstance(getApplicationContext()).setVisibility(View.VISIBLE);
+                if (VideoPlayerIJK.getInstance(getApplicationContext()).getCurrentPosition() == 0) {
                     ivGameMainView.setVisibility(View.INVISIBLE);
                     ivGameMainView.setFocusable(false);
                     loadVideo(gameInfBean.getAppVideo());
                 }
                 break;
             case R.id.iv_bt_download:
+                clGameVideo.removeView(VideoPlayerIJK.getInstance(activity));
+                Intent intent = new Intent(this, VideoPlayerActivity.class);
+                activity.startActivity(intent);
                 Toast.makeText(activity, getString(R.string.download), Toast.LENGTH_SHORT).show();
                 break;
             default:

@@ -1,11 +1,15 @@
 package com.example.androidlib.view;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AppOpsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -25,15 +29,17 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.TransitionOptions;
-import com.bumptech.glide.load.resource.gif.GifBitmapProvider;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.example.androidlib.BaseActivity;
 import com.example.androidlib.R;
 import com.example.androidlib.utils.VideoPlayerListener;
 import com.example.androidlib.view.adapter.VideoPlayerAdapter;
 import com.example.androidlib.view.bean.PlayerVideoBean;
+import com.google.android.exoplayer.chunk.ChunkExtractorWrapper;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +60,28 @@ public class VideoPlayerIJK extends FrameLayout {
 
     private SeekBar seekBar;
     private RecyclerView rvGameVideos;
+    private ImageView allWindow;
+    private boolean isAllScreen = false;
     private static List<PlayerVideoBean> playerVideoBeans;
+    private WeakReference<BaseActivity> activity;
+
+    private static VideoPlayerIJK videoPlayerIJK = null;
+
+    public static VideoPlayerIJK getInstance(Context context) {
+        if (videoPlayerIJK == null) {
+            synchronized (VideoPlayerIJK.class) {
+                if (videoPlayerIJK == null) {
+                    videoPlayerIJK = new VideoPlayerIJK(context);
+                }
+            }
+        }
+        return videoPlayerIJK;
+    }
+
+    public static VideoPlayerIJK getInstance() {
+        return videoPlayerIJK;
+    }
+
 
     private Handler handler = new Handler() {
         @Override
@@ -112,11 +139,17 @@ public class VideoPlayerIJK extends FrameLayout {
         }
     }
 
+    public void setActivity(WeakReference<BaseActivity> activity1) {
+        activity = activity1;
+    }
+
+
     private void createSurfaceView() {
         //surfaceView
         surfaceView = new SurfaceView(mContext);
         surfaceView.getHolder().addCallback(new MySurfaceCallBack());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+        surfaceView.setLayoutParams(layoutParams);
         this.addView(surfaceView);
         //暂停图片
         imageView = new ImageView(mContext);
@@ -129,6 +162,7 @@ public class VideoPlayerIJK extends FrameLayout {
         allTime.setTextColor(getResources().getColor(R.color.white));
         LayoutParams layoutParamsAllTime = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.END);
         layoutParamsAllTime.rightMargin = 80;
+        layoutParamsAllTime.bottomMargin = 20;
         allTime.setLayoutParams(layoutParamsAllTime);
         this.addView(allTime);
         //当前时间
@@ -136,13 +170,26 @@ public class VideoPlayerIJK extends FrameLayout {
         currentTime.setTextColor(getResources().getColor(R.color.white));
         LayoutParams layoutParamsCurrentTime = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.START);
         layoutParamsCurrentTime.leftMargin = 80;
+        layoutParamsCurrentTime.bottomMargin = 20;
         currentTime.setLayoutParams(layoutParamsCurrentTime);
         this.addView(currentTime);
         //seekBar
         seekBar = new SeekBar(mContext);
-        LayoutParams layoutParamsSeekBar = new LayoutParams(800, LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        LayoutParams layoutParamsSeekBar = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         seekBar.setLayoutParams(layoutParamsSeekBar);
+        layoutParamsSeekBar.leftMargin = 150;
+        layoutParamsSeekBar.rightMargin = 150;
+        layoutParamsSeekBar.bottomMargin = 20;
         this.addView(seekBar);
+        //放大图标
+        allWindow = new ImageView(mContext);
+        LayoutParams layoutParamsWindow = new LayoutParams(40, 40, Gravity.BOTTOM | Gravity.END);
+        layoutParamsWindow.rightMargin = 20;
+        layoutParamsWindow.bottomMargin = 20;
+        allWindow.setImageResource(R.drawable.m4399_png_screen_icon);
+        allWindow.setLayoutParams(layoutParamsWindow);
+        this.addView(allWindow);
+
         //recyclerView
         rvGameVideos = new RecyclerView(mContext);
         LayoutParams layoutParamsRecyclerView = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.START);
@@ -154,6 +201,7 @@ public class VideoPlayerIJK extends FrameLayout {
         playerVideoBeans = getPlayerVideoBeans();
         rvGameVideos.setLayoutManager(layoutManager);
         VideoPlayerAdapter videoPlayerAdapter = new VideoPlayerAdapter(R.layout.item_game_video);
+
 
         videoPlayerAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
@@ -171,6 +219,7 @@ public class VideoPlayerIJK extends FrameLayout {
         this.addView(rvGameVideos);
         setInvisible();
 
+
         imageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,6 +232,23 @@ public class VideoPlayerIJK extends FrameLayout {
                 }
             }
         });
+        allWindow.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAllScreen) {
+                    Intent intent = new Intent();
+                    intent.setAction("open_game_video_activity");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.getApplicationContext().startActivity(intent);
+                    isAllScreen = true;
+                } else {
+                    activity.get().finish();
+                    isAllScreen = false;
+                }
+            }
+        });
+
+
         imageView.clearFocus();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -239,6 +305,7 @@ public class VideoPlayerIJK extends FrameLayout {
         imageView.clearFocus();
         surfaceView.requestFocus();
         imageView.setVisibility(INVISIBLE);
+        allWindow.setVisibility(INVISIBLE);
     }
 
     private void setVisible() {
@@ -247,12 +314,12 @@ public class VideoPlayerIJK extends FrameLayout {
         allTime.setVisibility(VISIBLE);
         currentTime.setVisibility(VISIBLE);
         imageView.setVisibility(VISIBLE);
+        allWindow.setVisibility(VISIBLE);
     }
 
     public void setFocusable(VideoPlayerListener videoPlayerListener) {
 
     }
-
 
     private class MySurfaceCallBack implements SurfaceHolder.Callback {
 
@@ -265,12 +332,23 @@ public class VideoPlayerIJK extends FrameLayout {
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             //surfaceView创建成功后，加载视频
             load();
+
         }
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
 
         }
+    }
+
+    long lastPosition = 0;
+
+    public long getLastPosition() {
+        return lastPosition;
+    }
+
+    public void setLastPosition(long lastPosition) {
+        this.lastPosition = lastPosition;
     }
 
     private void load() {
@@ -280,14 +358,14 @@ public class VideoPlayerIJK extends FrameLayout {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        imageView.setVisibility(INVISIBLE);
         mMediaPlayer.setDisplay(surfaceView.getHolder());
         mMediaPlayer.prepareAsync();
+        setInvisible();
         mMediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
                 getDuration();
-//                timeListener.start();
+                seekTo(getLastPosition());
                 new TimeListener().start();
             }
         });
@@ -306,8 +384,6 @@ public class VideoPlayerIJK extends FrameLayout {
 
             }
         });
-
-
     }
 
 
@@ -348,7 +424,8 @@ public class VideoPlayerIJK extends FrameLayout {
     public void start() {
         if (mMediaPlayer != null) {
             imageView.setImageResource(R.drawable.m4399_png_share_video_icon_play_gary);
-            imageView.setVisibility(INVISIBLE);
+//            imageView.setVisibility(INVISIBLE);
+            setInvisible();
             mMediaPlayer.start();
         }
     }
