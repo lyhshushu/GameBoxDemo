@@ -68,6 +68,10 @@ dependencies {
     implementation rootProject.ext.allLib.googleMaterial
     implementation rootProject.ext.allLib.vectordrawable
     //activityKnife(自定义尝试)
-    //activityKnife(自定义尝试)
     implementation rootProject.ext.allLib.myTestLib
+    //OKHttp
+    implementation 'com.zhy:okhttputils:2.6.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
+    implementation 'com.squareup.okio:okio:1.17.4'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
 }

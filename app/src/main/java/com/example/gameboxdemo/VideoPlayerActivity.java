@@ -51,9 +51,9 @@ public class VideoPlayerActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+        super.onPause();
         VideoPlayerIJK.getInstance().setLastPosition(VideoPlayerIJK.getInstance().getCurrentPosition());
         ckGameActVideo.removeView(VideoPlayerIJK.getInstance());
-        super.onPause();
     }
 
     @SuppressLint("SourceLockedOrientationActivity")

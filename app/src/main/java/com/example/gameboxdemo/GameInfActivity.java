@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.FitWindowsLinearLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -190,9 +189,9 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+        super.onPause();
         VideoPlayerIJK.getInstance().setLastPosition(VideoPlayerIJK.getInstance().getCurrentPosition());
         clGameVideo.removeView(VideoPlayerIJK.getInstance());
-        super.onPause();
     }
 
     public void loadVideo(String path) {
@@ -204,12 +203,14 @@ public class GameInfActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         IjkMediaPlayer.native_profileEnd();
+
     }
 
     @Override
     protected void onDestroy() {
 //        videoPlayer.release();
-        VideoPlayerIJK.getInstance(getApplicationContext()).release();
+        VideoPlayerIJK.getInstance().setLastPosition(0);
+        VideoPlayerIJK.getInstance().release();
         super.onDestroy();
     }
 
@@ -360,12 +361,10 @@ public class GameInfActivity extends BaseActivity {
         int id = v.getId();
         switch (id) {
             case R.id.iv_Game_main_view:
+                loadVideo(gameInfBean.getAppVideo());
                 VideoPlayerIJK.getInstance(getApplicationContext()).setVisibility(View.VISIBLE);
-                if (VideoPlayerIJK.getInstance(getApplicationContext()).getCurrentPosition() == 0) {
-                    ivGameMainView.setVisibility(View.INVISIBLE);
-                    ivGameMainView.setFocusable(false);
-                    loadVideo(gameInfBean.getAppVideo());
-                }
+                ivGameMainView.setVisibility(View.INVISIBLE);
+                ivGameMainView.setFocusable(false);
                 break;
             case R.id.iv_bt_download:
                 clGameVideo.removeView(VideoPlayerIJK.getInstance(activity));
