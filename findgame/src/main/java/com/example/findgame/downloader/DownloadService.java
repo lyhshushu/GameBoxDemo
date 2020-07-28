@@ -6,9 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -43,7 +41,7 @@ public class DownloadService extends Service {
     private final DownloaderListener listener = new DownloaderListener() {
         @Override
         public void onProgress(int id, int progress) {
-            getNotificationManager().notify(id, getNotification("下载中：进度", progress));
+            getNotificationManager().notify(id + 1, getNotification("下载中：进度", progress));
         }
 
         @Override
@@ -51,7 +49,7 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id, getNotification("下载成功", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载成功", -1));
         }
 
         @Override
@@ -59,14 +57,14 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id, getNotification("下载失败", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载失败", -1));
         }
 
         @Override
         public void onPaused(int id) {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
-            getNotificationManager().notify(id, getNotification("下载暂停", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载暂停", -1));
         }
 
         @Override
@@ -75,7 +73,7 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id, getNotification("下载取消", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载取消", -1));
         }
     };
 
@@ -149,14 +147,14 @@ public class DownloadService extends Service {
                 downLoadFileTasks.add(downLoadFileTask1);
                 String[] strings = {url, gameName};
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
-                startForeground(getId(url), getNotification("请求下载链接中", 0));
+                startForeground(getId(url) + 1, getNotification("请求下载链接中", 0));
             } else {
                 downloadUrl = url;
                 String[] strings = {url, gameName};
                 DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener);
                 downLoadFileTasks.set(getId(url), downLoadFileTask1);
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
-                startForeground(getId(url), getNotification("重新请求下载链接中", 0));
+                startForeground(getId(url) + 1, getNotification("重新请求下载链接中", 0));
             }
 //            if (downLoadFileTask == null) {
 //                downloadUrl = url;

@@ -1,5 +1,6 @@
 package com.example.findgame.downloader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -7,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,11 +31,15 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
     public static final int TYPE_PAUSED = 2;
     public static final int TYPE_CANCELED = 3;
 
+    private static final int THREAD_NUM = 5;
+
     private DownloaderListener listener;
     private boolean isCanceled = false;
     private boolean isPaused = false;
     private int lastProgress;
     private int id;
+
+
 
     public DownLoadFileTask(int id, DownloaderListener listener) {
         this.id = id;
@@ -47,8 +55,8 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
         long downloadedLength = 0;
         //下载地址
         String downloadUrl = strings[0];
-        String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
-        String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+//        String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
+//        String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         file = new File("sdcard/" + strings[1] + ".apk");
         //文件已存在获取长度
         if (file.exists()) {
@@ -93,7 +101,7 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
                 response.body().close();
                 return TYPE_SUCCESS;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
@@ -110,7 +118,7 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
                 e.printStackTrace();
             }
         }
-        return null;
+        return TYPE_PAUSED;
     }
 
     /**
@@ -145,7 +153,7 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
         super.onProgressUpdate(values);
         int progress = values[0];
         if (progress > lastProgress) {
-            listener.onProgress(id,progress);
+            listener.onProgress(id, progress);
             lastProgress = progress;
         }
     }
@@ -158,21 +166,23 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
     @Override
     protected void onPostExecute(Integer integer) {
         super.onPostExecute(integer);
-        switch (integer) {
-            case TYPE_SUCCESS:
-                listener.onSuccess(id);
-                break;
-            case TYPE_FAILED:
-                listener.onFailed(id);
-                break;
-            case TYPE_CANCELED:
-                listener.onCanceled(id);
-                break;
-            case TYPE_PAUSED:
-                listener.onPaused(id);
-                break;
-            default:
-                break;
+        if (integer != null) {
+            switch (integer) {
+                case TYPE_SUCCESS:
+                    listener.onSuccess(id);
+                    break;
+                case TYPE_FAILED:
+                    listener.onFailed(id);
+                    break;
+                case TYPE_CANCELED:
+                    listener.onCanceled(id);
+                    break;
+                case TYPE_PAUSED:
+                    listener.onPaused(id);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
