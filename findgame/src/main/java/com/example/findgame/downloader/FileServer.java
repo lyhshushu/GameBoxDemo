@@ -9,15 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 数据库操作封装
+ * 数据库操作封装(不支持多线程)
  *
  * @author 4399 yh.liu
  */
 public class FileServer {
     private DownloadIdDateBaseHelper dbHelper;
+    private DatabaseManager mDatabaseManager;
 
     public FileServer(Context context) {
         dbHelper = new DownloadIdDateBaseHelper(context);
+        mDatabaseManager = DatabaseManager.getInstance(dbHelper);
     }
 
     /**
@@ -27,15 +29,17 @@ public class FileServer {
      * @return
      */
     public Map<Integer, Long> getData(String path) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDatabaseManager.getReadableDatabase();
         Cursor cursor = db.rawQuery("select threadid, downlength from filedownlog where downpath=?",
                 new String[]{path});
-        Map<Integer, Long> data = new HashMap<Integer, Long>();
+        Map<Integer, Long> data = new HashMap<>();
         while (cursor.moveToNext()) {
             data.put(cursor.getInt(0), cursor.getLong(1));
         }
         cursor.close();
-        db.close();
+//        db.close();
+        mDatabaseManager.closeDatabase();
         return data;
     }
 
@@ -46,7 +50,8 @@ public class FileServer {
      * @param map
      */
     public void save(String path, Map<Integer, Long> map) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDatabaseManager.getWritableDatabase();
         db.beginTransaction();
         try {
             for (Map.Entry<Integer, Long> entry : map.entrySet()) {
@@ -54,10 +59,12 @@ public class FileServer {
                         "insert into filedownlog(downpath, threadid, downlength) values(?,?,?)",
                         new Object[]{path, entry.getKey(), entry.getValue()});
             }
+            db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
-        db.close();
+//        db.close();
+        mDatabaseManager.closeDatabase();
     }
 
     /**
@@ -68,10 +75,12 @@ public class FileServer {
      * @param pos
      */
     public void update(String path, int threadId, long pos) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDatabaseManager.getWritableDatabase();
         db.execSQL("update filedownlog set downlength=? where downpath=? and threadid=?",
                 new Object[]{pos, path, threadId});
-        db.close();
+//        db.close();
+        mDatabaseManager.closeDatabase();
     }
 
     /**
@@ -80,9 +89,12 @@ public class FileServer {
      * @param path
      */
     public void delete(String path) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDatabaseManager.getWritableDatabase();
         db.execSQL("delete from filedownlog where downpath=?",
                 new Object[]{path});
-        db.close();
+//        db.close();
+        mDatabaseManager.closeDatabase();
     }
+
 }

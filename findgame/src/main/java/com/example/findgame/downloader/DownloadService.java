@@ -143,7 +143,7 @@ public class DownloadService extends Service {
             if (!urls.contains(url)) {
                 downloadUrl = url;
                 urls.add(url);
-                DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener);
+                DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener, getApplicationContext(), downloadUrl, gameName);
                 downLoadFileTasks.add(downLoadFileTask1);
                 String[] strings = {url, gameName};
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
@@ -151,7 +151,7 @@ public class DownloadService extends Service {
             } else {
                 downloadUrl = url;
                 String[] strings = {url, gameName};
-                DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener);
+                DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener, getApplicationContext(), downloadUrl, gameName);
                 downLoadFileTasks.set(getId(url), downLoadFileTask1);
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
                 startForeground(getId(url) + 1, getNotification("重新请求下载链接中", 0));

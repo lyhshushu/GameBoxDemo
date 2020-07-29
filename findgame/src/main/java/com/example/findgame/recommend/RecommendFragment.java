@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
 import com.example.androidlib.BaseFragment;
 import com.example.androidlib.utils.OutLineSetter;
 import com.example.findgame.downloader.DownloadService;
