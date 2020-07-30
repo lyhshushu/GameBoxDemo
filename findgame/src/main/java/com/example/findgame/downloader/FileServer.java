@@ -1,10 +1,10 @@
 package com.example.findgame.downloader;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +16,6 @@ import java.util.Map;
 public class FileServer {
     private DownloadIdDateBaseHelper dbHelper;
     private DatabaseManager mDatabaseManager;
-
     public FileServer(Context context) {
         dbHelper = new DownloadIdDateBaseHelper(context);
         mDatabaseManager = DatabaseManager.getInstance(dbHelper);
@@ -29,7 +28,6 @@ public class FileServer {
      * @return
      */
     public Map<Integer, Long> getData(String path) {
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
         SQLiteDatabase db = mDatabaseManager.getReadableDatabase();
         Cursor cursor = db.rawQuery("select threadid, downlength from filedownlog where downpath=?",
                 new String[]{path});
@@ -38,7 +36,6 @@ public class FileServer {
             data.put(cursor.getInt(0), cursor.getLong(1));
         }
         cursor.close();
-//        db.close();
         mDatabaseManager.closeDatabase();
         return data;
     }

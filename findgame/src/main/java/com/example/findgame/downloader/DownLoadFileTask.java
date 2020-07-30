@@ -40,6 +40,7 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
     private Map<Integer, Long> data = new ConcurrentHashMap<>();
     private FileServer fileServer;
     private String downloadUrl;
+    private String appName;
     private DownThread[] downThreads;
     private Context context;
     private long fileSize;
@@ -80,21 +81,10 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
         this.listener = listener;
         this.context = context;
         this.downloadUrl = downloadUrl;
+        this.appName = appName;
         fileServer = new FileServer(context);
         downThreads = new DownThread[THREAD_NUM];
-        //主线程？？？
-        Map<Integer, Long> logData = fileServer.getData(downloadUrl);
         saveFile = new File("sdcard/" + appName + ".apk");
-        if (logData.size() > 0) {
-            for (Map.Entry<Integer, Long> entry : logData.entrySet()) {
-                data.put(entry.getKey(), entry.getValue());
-            }
-        }
-        if (data.size() == THREAD_NUM) {
-            for (int i = 0; i < downThreads.length; i++) {
-                downloadSize += data.get(i + 1);
-            }
-        }
     }
 
     @Override
@@ -107,6 +97,17 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
             fileSize = getContentLength(downloadUrl);
             if (fileSize <= 0) {
                 return TYPE_FAILED;
+            }
+            Map<Integer, Long> logData = fileServer.getData(appName);
+            if (logData.size() > 0) {
+                for (Map.Entry<Integer, Long> entry : logData.entrySet()) {
+                    data.put(entry.getKey(), entry.getValue());
+                }
+            }
+            if (data.size() == THREAD_NUM) {
+                for (int i = 0; i < downThreads.length; i++) {
+                    downloadSize += data.get(i + 1);
+                }
             }
             block = (this.fileSize % THREAD_NUM == 0) ? this.fileSize / THREAD_NUM : this.fileSize / THREAD_NUM + 1;
             accessFile.close();
@@ -128,8 +129,8 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
                 }
             }
             //获取下载节点完成重置fileServer;
-            fileServer.delete(this.downloadUrl);
-            fileServer.save(downloadUrl, data);
+            fileServer.delete(this.appName);
+            fileServer.save(appName, data);
             boolean notFinish = true;
             while (notFinish) {
                 Thread.sleep(900);
@@ -147,13 +148,13 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
                 }
                 if (isPaused) {
                     setExit(true);
-                    fileServer.delete(this.downloadUrl);
-                    fileServer.save(downloadUrl, data);
+                    fileServer.delete(appName);
+                    fileServer.save(appName, data);
                     return TYPE_PAUSED;
                 }
             }
             if (downloadSize == fileSize) {
-                fileServer.delete(downloadUrl);
+                fileServer.delete(appName);
                 return TYPE_SUCCESS;
             }
         } catch (Exception e) {

@@ -7,14 +7,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
-import android.provider.ContactsContract;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -22,7 +23,6 @@ import androidx.core.app.NotificationCompat;
 import com.example.findgame.R;
 
 import java.io.File;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,13 +35,14 @@ public class DownloadService extends Service {
     private DownLoadFileTask downLoadFileTask;
     private List<DownLoadFileTask> downLoadFileTasks = new LinkedList<>();
     private List<String> urls = new LinkedList<>();
+    private List<Bitmap> bitmapLarges = new LinkedList<>();
 
     private String downloadUrl;
 
     private final DownloaderListener listener = new DownloaderListener() {
         @Override
         public void onProgress(int id, int progress) {
-            getNotificationManager().notify(id + 1, getNotification("下载中：进度", progress));
+            getNotificationManager().notify(id + 1, getNotification("下载中：进度", progress, bitmapLarges.get(id)));
         }
 
         @Override
@@ -49,7 +50,7 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id + 1, getNotification("下载成功", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载成功", -1, bitmapLarges.get(id)));
         }
 
         @Override
@@ -57,14 +58,14 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id + 1, getNotification("下载失败", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载失败", -1, bitmapLarges.get(id)));
         }
 
         @Override
         public void onPaused(int id) {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
-            getNotificationManager().notify(id + 1, getNotification("下载暂停", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载暂停", -1, bitmapLarges.get(id)));
         }
 
         @Override
@@ -73,7 +74,7 @@ public class DownloadService extends Service {
             downLoadFileTasks.set(id, null);
 //            downLoadFileTask = null;
             stopForeground(true);
-            getNotificationManager().notify(id + 1, getNotification("下载取消", -1));
+            getNotificationManager().notify(id + 1, getNotification("下载取消", -1, bitmapLarges.get(id)));
         }
     };
 
@@ -107,7 +108,7 @@ public class DownloadService extends Service {
      * @param progress
      * @return
      */
-    private Notification getNotification(String title, int progress) {
+    private Notification getNotification(String title, int progress, Bitmap bitmap) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel = new NotificationChannel(CHANNEL_ONE_ID, CHANNEL_ONE_NAME, NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.enableLights(true);
@@ -125,7 +126,7 @@ public class DownloadService extends Service {
         PendingIntent pi = PendingIntent.getActivities(this, 0, intents, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setChannelId(CHANNEL_ONE_ID);
         builder.setSmallIcon(R.drawable.m4399_png_setting_4399_login_or_bind_logo_nor)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.m4399_png_user_homepage_header_refresh_btn))
+                .setLargeIcon(bitmap)
                 .setContentIntent(pi)
                 .setContentTitle(title);
         if (progress > 0) {
@@ -139,22 +140,23 @@ public class DownloadService extends Service {
     //id线程绑定下载？？
     public class DownloadBinder extends Binder {
 
-        public void startDownload(String url, String gameName) {
+        public void startDownload(String url, String gameName, Drawable drawable) {
             if (!urls.contains(url)) {
                 downloadUrl = url;
                 urls.add(url);
+                bitmapLarges.add(drawableToBitmap(drawable));
                 DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener, getApplicationContext(), downloadUrl, gameName);
                 downLoadFileTasks.add(downLoadFileTask1);
                 String[] strings = {url, gameName};
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
-                startForeground(getId(url) + 1, getNotification("请求下载链接中", 0));
+                startForeground(getId(url) + 1, getNotification("请求下载链接中", 0, bitmapLarges.get(getId(url))));
             } else {
                 downloadUrl = url;
                 String[] strings = {url, gameName};
                 DownLoadFileTask downLoadFileTask1 = new DownLoadFileTask(getId(url), listener, getApplicationContext(), downloadUrl, gameName);
                 downLoadFileTasks.set(getId(url), downLoadFileTask1);
                 downLoadFileTask1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, strings);
-                startForeground(getId(url) + 1, getNotification("重新请求下载链接中", 0));
+                startForeground(getId(url) + 1, getNotification("重新请求下载链接中", 0, bitmapLarges.get(getId(url))));
             }
 //            if (downLoadFileTask == null) {
 //                downloadUrl = url;
@@ -205,5 +207,11 @@ public class DownloadService extends Service {
                 }
             }
         }
+    }
+
+    private Bitmap drawableToBitmap(Drawable drawable) {
+        BitmapDrawable bd = (BitmapDrawable) drawable;
+        Bitmap bitmap = bd.getBitmap();
+        return bitmap;
     }
 }

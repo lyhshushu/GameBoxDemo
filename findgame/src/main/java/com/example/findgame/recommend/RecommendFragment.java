@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.gesture.GestureLibraries;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,6 +25,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -30,9 +35,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.downloader.PRDownloader;
-import com.downloader.PRDownloaderConfig;
 import com.example.androidlib.BaseFragment;
 import com.example.androidlib.utils.OutLineSetter;
 import com.example.findgame.downloader.DownloadService;
@@ -45,14 +50,17 @@ import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
 import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
+import com.example.findgame.downloader.FileServer;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
+import com.youth.banner.transformer.FlipHorizontalTransformer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -258,8 +266,15 @@ public class RecommendFragment extends BaseFragment {
             } else if (id == R.id.bt_download) {
                 Button button = (Button) adapter.getViewByPosition(rvGameInf, position, R.id.bt_download);
                 assert button != null;
+                final Drawable[] drawable = {null};
                 if (button.getText() == getResources().getString(R.string.download)) {
-                    downloadBinder.startDownload(gameInfBean.getDownloadUrl(), gameInfBean.getGameName());
+                    Glide.with(mContext).load(gameInfBean.getGameImgUrl()).into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            drawable[0] = resource;
+                            downloadBinder.startDownload(gameInfBean.getDownloadUrl(), gameInfBean.getGameName(), drawable[0]);
+                        }
+                    });
                     button.setText("暂停");
                     button.setBackgroundResource(R.drawable.update_button);
                 } else {
@@ -377,7 +392,6 @@ public class RecommendFragment extends BaseFragment {
             Toast.makeText(mContext, "update_apk_delete", Toast.LENGTH_SHORT).show();
             updateApk.setVisibility(View.GONE);
         } else if (id == R.id.update_apk_button) {
-            PRDownloader.pause(downloadId);
             Toast.makeText(mContext, "update_apk_button", Toast.LENGTH_SHORT).show();
         }
     }

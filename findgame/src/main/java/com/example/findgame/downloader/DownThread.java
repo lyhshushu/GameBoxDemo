@@ -13,6 +13,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * @author 4399
+ */
 public class DownThread extends Thread {
 
     private File downFile;
@@ -43,7 +46,8 @@ public class DownThread extends Thread {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .connectionPool(new ConnectionPool(32, 5, TimeUnit.MINUTES));
         client = builder.build();
-        while (block > downLength) {
+        //屏蔽一字节误差
+        while (block > downLength && !isFinish()) {
             try {
                 long startPos = block * (threadId - 1) + downLength;
                 long endPos = block * threadId - 1;

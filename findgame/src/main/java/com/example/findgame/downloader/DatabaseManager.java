@@ -1,5 +1,6 @@
 package com.example.findgame.downloader;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.concurrent.atomic.AtomicInteger;
