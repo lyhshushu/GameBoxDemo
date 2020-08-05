@@ -10,7 +10,6 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -19,11 +18,20 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
+            zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+//    dexOptions {
+//        incremental true
+//    }
 
 }
 
@@ -56,6 +64,7 @@ dependencies {
     implementation rootProject.ext.allLib.datebase
     //权限
     implementation rootProject.ext.allLib.permission
+    //添加模板之间依赖
     implementation project(path: ':findgame')
     //沉浸式状态栏
     implementation rootProject.ext.allLib.immersionBar

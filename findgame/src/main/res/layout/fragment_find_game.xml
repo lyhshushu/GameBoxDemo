@@ -21,9 +21,41 @@
         app:tl_indicator_margin_bottom="5dp"
         app:tl_indicator_width="18dp"
         app:tl_tab_space_equal="true"
-        app:tl_textBold="SELECT"
+        app:tl_tab_width="80dp"
         app:tl_textSelectColor="@color/head_green"
         app:tl_textUnselectColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_item_start"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:text="推荐"
+        android:textColor="@color/head_green"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_bottom_line"
+        android:layout_width="18dp"
+        android:layout_height="3dp"
+        android:layout_marginBottom="4.6dp"
+        android:background="@drawable/tab_bottom_bar"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_item_start"
+        app:layout_constraintEnd_toEndOf="@id/tv_item_start"
+        app:layout_constraintStart_toStartOf="@id/tv_item_start" />
+
+    <ImageView
+        android:id="@+id/iv_shadow"
+        android:layout_width="1.5dp"
+        android:layout_height="25dp"
+        android:background="@color/back_inside"
+        app:layout_constraintBottom_toBottomOf="@id/tv_item_start"
+        app:layout_constraintStart_toEndOf="@id/tv_item_start"
+        app:layout_constraintTop_toTopOf="@id/tv_item_start" />
 
 
     <androidx.viewpager.widget.ViewPager

@@ -282,68 +282,7 @@ public class RecommendFragment extends BaseFragment {
                     button.setText(getResources().getString(R.string.download));
                     button.setBackgroundResource(R.drawable.download_button);
                 }
-                //无法大文件,进度错误0->100
-//                MvcModelImp mvcModelImp = new MvcModelImp();
-//                mvcModelImp.downloadModel(gameInfBean.getDownloadUrl(), "sdcard/" + gameInfBean.getGameName() + ".apk", new MvcListener() {
-//                    @Override
-//                    public void onError(String message) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFinish() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onProgress(int progress) {
-//                        Message msg = new Message();
-//                        msg.what = 2;
-//                        msg.arg1 = progress;
-//                        handler.sendMessage(msg);
-//                    }
-//                });
-                //无获取进度，
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        download();
-//                    }
-//                }).start();
 
-//                使用PRDownloader, 封装尝试并不理想，返回id不规范，支持多线程
-//                if (PRDownloader.getStatus(downloadId) == Status.PAUSED) {
-//                    PRDownloader.resume(downloadId);
-//                } else {
-//                    PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
-//                            .setDatabaseEnabled(true)
-//                            .build();
-//                    PRDownloader.initialize(mContext, config);
-//                    downloadId = PRDownloader.download(gameInfBean.getDownloadUrl(), "sdcard/android/data/com.example.gameboxdemo", gameInfBean.getGameName() + ".apk")
-//                            .build()
-//                            .setOnProgressListener(new OnProgressListener() {
-//                                @Override
-//                                public void onProgress(Progress progress) {
-//                                    Message msg = new Message();
-//                                    msg.what = 2;
-//                                    long currentBytes = progress.currentBytes;
-//                                    long totalBytes = progress.totalBytes;
-//                                    msg.arg1 = (int) ((currentBytes * 100) / totalBytes);
-//                                    handler.sendMessage(msg);
-//                                }
-//                            })
-//                            .start(new OnDownloadListener() {
-//                                @Override
-//                                public void onDownloadComplete() {
-//
-//                                }
-//
-//                                @Override
-//                                public void onError(Error error) {
-//
-//                                }
-//                            });
-//                }
                 Toast.makeText(mContext, gameInfBean.getGameName() + "bt_download_game_inf", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.tweet) {
                 Toast.makeText(mContext, "特推", Toast.LENGTH_SHORT).show();
