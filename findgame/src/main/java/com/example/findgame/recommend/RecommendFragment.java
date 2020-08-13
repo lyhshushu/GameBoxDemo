@@ -335,8 +335,6 @@ public class RecommendFragment extends BaseFragment {
         }
     }
 
-
-    @SuppressLint("HandlerLeak")
     @Override
     protected void applyData() {
         //测试数据
@@ -358,32 +356,34 @@ public class RecommendFragment extends BaseFragment {
         adPicUrl = new LinkedList<>();
         hotBeans = new LinkedList<>();
         getJSON(BASEURL + "/app/android/v4.4.5/game-index.html");
-        handler = new Handler() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 1) {
-                    for (int i = types.size() - 1; i >= 0; i--) {
-                        GameInfBean gameInfBean = new GameInfBean();
-                        gameInfBean.setType(types.get(i));
-                        gameInfBean.setTitleName(titles.get(i));
-                        mGameInfData.add(4 * (i + 1), gameInfBean);
-                        mGameInfAdapter.setNewData(mGameInfData);
-                    }
-                    Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
-                    Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
-                    OutLineSetter.setOutLine(picOne, 30);
-                    OutLineSetter.setOutLine(picTwo, 30);
-                }
-                if (msg.what == 2) {
-                    if (updateApkName != null) {
-                        updateApkName.setText(msg.arg1 + "%");
-                    }
-                }
-            }
-        };
+        handler = new Handler();
+        //handler并非静态类，可能引起内存泄漏
+//        handler = new Handler() {
+//            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//            @SuppressLint("SetTextI18n")
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what == 1) {
+//                    for (int i = types.size() - 1; i >= 0; i--) {
+//                        GameInfBean gameInfBean = new GameInfBean();
+//                        gameInfBean.setType(types.get(i));
+//                        gameInfBean.setTitleName(titles.get(i));
+//                        mGameInfData.add(4 * (i + 1), gameInfBean);
+//                        mGameInfAdapter.setNewData(mGameInfData);
+//                    }
+//                    Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
+//                    Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
+//                    OutLineSetter.setOutLine(picOne, 30);
+//                    OutLineSetter.setOutLine(picTwo, 30);
+//                }
+//                if (msg.what == 2) {
+//                    if (updateApkName != null) {
+//                        updateApkName.setText(msg.arg1 + "%");
+//                    }
+//                }
+//            }
+//        };
         mAdInfAdapter.setNewData(mAdInfData);
         mMyGameAdapter.setNewData(mMyGameData);
     }
@@ -402,7 +402,23 @@ public class RecommendFragment extends BaseFragment {
                 for (int i = 0; i < adListLength; i++) {
                     getListInf(i, json);
                 }
-                handler.sendEmptyMessage(1);
+                handler.post(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void run() {
+                        for (int i = types.size() - 1; i >= 0; i--) {
+                            GameInfBean gameInfBean = new GameInfBean();
+                            gameInfBean.setType(types.get(i));
+                            gameInfBean.setTitleName(titles.get(i));
+                            mGameInfData.add(4 * (i + 1), gameInfBean);
+                            mGameInfAdapter.setNewData(mGameInfData);
+                        }
+                        Glide.with(mContext).load(adPicUrl.get(0).getPicOneUrl()).into(picOne);
+                        Glide.with(mContext).load(adPicUrl.get(1).getPicOneUrl()).into(picTwo);
+                        OutLineSetter.setOutLine(picOne, 30);
+                        OutLineSetter.setOutLine(picTwo, 30);
+                    }
+                });
             }
 
             @Override

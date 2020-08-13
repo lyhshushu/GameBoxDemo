@@ -16,12 +16,14 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.androidlib.BaseFragment;
+import com.example.androidlib.view.NoAnimotionViewPager;
 import com.example.findgame.album.AlbumFragment;
 import com.example.findgame.classification.ClassificationFragment;
 import com.example.findgame.information.InformationFragment;
 import com.example.findgame.rank.RankFragment;
 import com.example.findgame.recommend.RecommendFragment;
 import com.flyco.tablayout.SlidingTabLayout;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +135,18 @@ public class FindGameFragment extends BaseFragment {
                 }
             }
         });
+        xTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                xTabLayout.setCurrentTab(position, false);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+
+            }
+        });
+
 
         findGameViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

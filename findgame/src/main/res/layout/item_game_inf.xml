@@ -5,6 +5,7 @@
     android:id="@+id/csl_game_inf"
     android:layout_width="match_parent"
     android:layout_height="92dp"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <ImageView

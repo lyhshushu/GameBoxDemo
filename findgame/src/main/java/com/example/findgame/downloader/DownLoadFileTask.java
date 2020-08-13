@@ -84,7 +84,7 @@ public class DownLoadFileTask extends AsyncTask<String, Integer, Integer> {
         this.appName = appName;
         fileServer = new FileServer(context);
         downThreads = new DownThread[THREAD_NUM];
-        saveFile = new File("sdcard/" + appName + ".apk");
+        saveFile = new File(context.getExternalFilesDir("download"), appName + ".apk");
     }
 
     @Override

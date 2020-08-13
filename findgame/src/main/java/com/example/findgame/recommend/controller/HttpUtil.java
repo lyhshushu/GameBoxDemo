@@ -146,7 +146,7 @@ public class HttpUtil {
         });
     }
 
-    public void doDownload(String url, final String path, final MvcListener linstener) {
+    public void doDownload(String url, final String path, final MvcListener listener) {
 
         Request builder = new Request.Builder()
                 .url(url)
@@ -157,7 +157,7 @@ public class HttpUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                linstener.onError(e.getMessage());
+                listener.onError(e.getMessage());
             }
 
             @Override
@@ -173,10 +173,10 @@ public class HttpUtil {
                 while ((len = inputStream.read(bytes)) != -1) {
                     count += len;
                     fileOutputStream.write(bytes, 0, len);
-                    linstener.onProgress((int) (count * 100 / max));
+                    listener.onProgress((int) (count * 100 / max));
                 }
                 if (count >= max) {
-                    linstener.onFinish();
+                    listener.onFinish();
                 }
             }
         });

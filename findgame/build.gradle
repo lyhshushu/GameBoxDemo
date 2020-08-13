@@ -1,5 +1,10 @@
-apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
+
+if (isDebug.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
 
 android {
     compileSdkVersion 29
@@ -24,7 +29,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    sourceSets {
+        main {
+            if (!isDebug.toBoolean()) {
+                //只能定义外部manifest
+                manifest.srcFile "src/main/AndroidManifest.xml"
+            } else {
+//                只能定义内部
+                manifest.srcFile 'src/isdebug/AndroidManifest.xml'
+            }
+        }
+    }
 }
 
 dependencies {

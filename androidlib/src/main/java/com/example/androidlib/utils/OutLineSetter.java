@@ -7,6 +7,9 @@ import android.view.ViewOutlineProvider;
 
 import androidx.annotation.RequiresApi;
 
+/**
+ * @author 4399 yh.liu
+ */
 public class OutLineSetter {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void setOutLine(final View v, final int radius) {

@@ -79,8 +79,6 @@ public class GameInfActivity extends BaseActivity {
     ImageView ivBtDownload;
     @BindView(R.id.tv_game_size)
     TextView tvGameSize;
-    //    @BindView(R.id.video_player)
-//    VideoPlayerIJK videoPlayer;
     @BindView(R.id.cl_game_inf)
     ConstraintLayout clGameInf;
     @BindView(R.id.stl_game_inf)
@@ -105,7 +103,6 @@ public class GameInfActivity extends BaseActivity {
     public GameInfActBean gameInfBean;
     private List<PlayerVideoBean> playerVideoBeans;
     private List<String> titles;
-
 
     @Override
     public void initView() {
@@ -189,6 +186,7 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+        ivGameMainView.setVisibility(View.VISIBLE);
         super.onPause();
         VideoPlayerIJK.getInstance().setLastPosition(VideoPlayerIJK.getInstance().getCurrentPosition());
         clGameVideo.removeView(VideoPlayerIJK.getInstance());
