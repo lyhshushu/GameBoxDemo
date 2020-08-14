@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".HomeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/m4399_png_setting_4399_login_or_bind_logo_nor"
         android:label="@string/app_name"
@@ -22,7 +23,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />

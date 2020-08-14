@@ -9,6 +9,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -28,7 +30,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
         inflater.inflate(bindLayout(),rootLayout,true);
         bun= ButterKnife.bind(this,rootLayout);
-
         initParam();
         initView();
         bindListener();

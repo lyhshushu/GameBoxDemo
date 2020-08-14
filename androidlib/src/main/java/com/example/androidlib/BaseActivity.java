@@ -1,13 +1,16 @@
 package com.example.androidlib;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.gyf.immersionbar.ImmersionBar;
 import com.testinject.injectutil.InjectManager;
 
@@ -26,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected BaseActivity activity;
     private Unbinder bun;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

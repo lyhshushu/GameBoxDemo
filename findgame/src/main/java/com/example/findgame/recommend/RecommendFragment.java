@@ -34,6 +34,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -50,10 +52,8 @@ import com.example.findgame.bean.GameInfBean;
 import com.example.findgame.bean.MyGameBean;
 import com.example.findgame.bean.PlayerRecommendBean;
 import com.example.findgame.bean.TitleAd;
-import com.example.findgame.downloader.FileServer;
 import com.example.findgame.recommend.controller.MvcModelImp;
 import com.example.findgame.recommend.controller.OKutil;
-import com.youth.banner.transformer.FlipHorizontalTransformer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +75,7 @@ import butterknife.BindView;
 import static android.content.Context.BIND_AUTO_CREATE;
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
-
+@Route(path = "/findgame/recommend/RecommendFragment")
 public class RecommendFragment extends BaseFragment {
 
     public static final int OK_MODEl = 0;
@@ -752,6 +752,9 @@ public class RecommendFragment extends BaseFragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("gameId", gameId);
         context.getApplicationContext().startActivity(intent);
+//        ARouter.getInstance().build("/app/GameInfActivity")
+//                .withString("gameId", gameId)
+//                .navigation();
     }
 
 

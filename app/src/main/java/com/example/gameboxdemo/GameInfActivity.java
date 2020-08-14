@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,12 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.bumptech.glide.Glide;
 import com.example.androidlib.BaseActivity;
 import com.example.androidlib.view.InterToolbar;
@@ -62,6 +66,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import static com.example.androidlib.baseurl.Common.BASEURL;
 
 @InjectView(R.layout.activity_game_inf)
+@Route(path = "/app/GameInfActivity")
 public class GameInfActivity extends BaseActivity {
     private static final int MAX_ALPHA = 255;
 
@@ -106,6 +111,7 @@ public class GameInfActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        ARouter.getInstance().inject(this);
 //        addVideoView();
         VideoPlayerIJK.getInstance(getApplicationContext()).setVisibility(View.INVISIBLE);
         try {
@@ -377,11 +383,12 @@ public class GameInfActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.P)
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        ButterKnife.bind(this);
+//    }
 
 
     /**

@@ -12,6 +12,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME : project.getName()]
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -34,7 +40,7 @@ android {
 //    }
     sourceSets {
         main {
-                manifest.srcFile "src/main/AndroidManifest.xml"
+            manifest.srcFile "src/main/AndroidManifest.xml"
         }
     }
 
@@ -52,7 +58,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -101,5 +107,7 @@ dependencies {
     implementation rootProject.ext.allLib.eventBus
     //activityKnife(自定义尝试)
     implementation rootProject.ext.allLib.myTestLib
-
+    //ARouter
+    implementation 'com.alibaba:arouter-api:1.5.0'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
 }
