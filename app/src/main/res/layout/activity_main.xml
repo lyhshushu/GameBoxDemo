@@ -13,21 +13,20 @@
         android:layout_height="50dp"
         android:background="@color/white"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/ll_search"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_toStartOf="@+id/mail"
-            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24.5dp"
+            android:layout_toStartOf="@+id/mail"
             android:background="@drawable/etv_background">
 
             <ImageView
@@ -48,32 +47,35 @@
                 android:textSize="14sp" />
 
         </LinearLayout>
+
         <ImageView
             android:id="@+id/mail"
             android:layout_width="23dp"
-            android:layout_toLeftOf="@+id/image_download"
+            android:layout_height="23dp"
             android:layout_centerVertical="true"
             android:layout_marginEnd="25sp"
-            android:layout_height="23dp"
-            android:src="@drawable/m4399_png_actionbar_item_msg_box_normal"/>
+            android:layout_toLeftOf="@+id/image_download"
+            android:src="@drawable/m4399_png_actionbar_item_msg_box_normal" />
+
         <ImageView
             android:id="@+id/image_download"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:layout_marginEnd="21.5dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/m4399_png_toolbar_download_nor"/>
+            android:layout_marginEnd="21.5dp"
+            android:background="@drawable/m4399_png_toolbar_download_nor" />
 
     </RelativeLayout>
+
     <com.example.androidlib.view.IndexViewPager
-        app:layout_constraintTop_toBottomOf="@id/rl_search"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_gravity="center"
         android:background="@color/back_inside"
-        android:layout_gravity="center">
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintTop_toBottomOf="@id/rl_search">
 
     </com.example.androidlib.view.IndexViewPager>
 
@@ -81,13 +83,12 @@
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,9 @@
             android:name="android.notch_support"
             android:value="true" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/splashThemeLayer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

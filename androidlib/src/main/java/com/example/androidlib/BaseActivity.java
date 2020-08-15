@@ -29,9 +29,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected BaseActivity activity;
     private Unbinder bun;
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setTheme();
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -39,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 //        setContentView(getLayoutId());
         InjectManager.inject(this);
         bun = ButterKnife.bind(this);
+        ARouter.getInstance().inject(this);
         activity = this;
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -91,6 +92,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      */
     protected void widgetClick(View v) {
 
+    }
+
+    /**
+     * 设置activity theme
+     */
+    protected void setTheme() {
     }
 
 

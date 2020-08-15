@@ -17,8 +17,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.example.androidlib.BaseActivity;
 import com.example.androidlib.view.IndexViewPager;
 import com.example.findgame.FindGameFragment;
@@ -38,14 +40,23 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 /**
  * @author lyh
  */
+@Route(path = "/app/MainActivity")
 @InjectView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
     private static final long BACK_SECOND = 3000;
+
+    public static final int STARTUP_DELAY = 300;
+    public static final int ANIM_ITEM_DURATION = 1000;
+    public static final int ITEM_DELAY = 300;
+
+    private boolean animationStarted = false;
+
     @BindView(R.id.viewpager)
     IndexViewPager mViewPager;
     @BindView(R.id.nav_view)
     BottomNavigationView bottomNavigationView;
     private long firstClick;
+
 
     @Override
     public void initView() {
@@ -69,14 +80,13 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }
-
-
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
 //添加fragment
         adapter.addFragment(new FindGameFragment());
         adapter.addFragment(new Fragment());
         mViewPager.setAdapter(adapter);
     }
+
 
     /**
      * 跳转tab

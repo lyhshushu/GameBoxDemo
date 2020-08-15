@@ -371,14 +371,16 @@ public class GameInfActivity extends BaseActivity {
                 ivGameMainView.setFocusable(false);
                 break;
             case R.id.iv_bt_download:
-                clGameVideo.removeView(VideoPlayerIJK.getInstance(activity));
-                Intent intent = new Intent(this, VideoPlayerActivity.class);
-                activity.startActivity(intent);
+//                clGameVideo.removeView(VideoPlayerIJK.getInstance(activity));
+//                Intent intent = new Intent(this, VideoPlayerActivity.class);
+//                activity.startActivity(intent);
+                ARouter.getInstance().build("/app/MainActivity")
+                        .withString("gameId", gameId)
+                        .navigation();
                 Toast.makeText(activity, getString(R.string.download), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
-
         }
     }
 
